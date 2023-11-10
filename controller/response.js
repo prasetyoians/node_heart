@@ -377,8 +377,17 @@ async function sendAkselo(req,res){
   const data = req.body;
 
   var modus = req.query.modus;
-  var keterangan = req.query.keterangan;
   var nomor = req.query.nomor;
+
+var keterangan = "";
+
+if (nomor == 1) {
+  keterangan = "Tidak Aktif Bergerak";
+}else if(nomor == 2){
+  keterangan = "Normal";
+}else{
+  keterangan = "Aktif Bergerak";
+}
 
 
 
