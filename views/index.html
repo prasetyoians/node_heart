@@ -6,9 +6,9 @@
           <div class="row">
             <div class="col-md-12 grid-margin">
               <div class="row">
-                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+                <div class="col-12 col-xl-8 mb-4 mb-xl-0" style="margin-top: 30px;">
                   <h1 class="font-weight-bold">Selamat Datang!</h1>
-                <h6 class="font-weight-normal mb-0">Di Monitoring Smartwatch. <span class="text-primary">Jangan lupa untuk mengikuti saran dari AI ya!</span></h6>
+                <h6 class="font-weight-normal mb-0">Di  High-Five. <span class="text-primary">Monitoring SarungTangan Pintar</span></h6>
                 </div>
                 <div class="col-12 col-xl-4">
                  <div class="justify-content-end d-flex">
@@ -17,7 +17,7 @@
                    <input type="datetime-local" name="dari" id="dari" class="form-control">
                   </div>
                   <div class="dropdown flex-md-grow-1 flex-xl-grow-0 m-2">
-                    <label> Smpai</label>
+                    <label> Sampai</label>
                    <input type="datetime-local" name="sampai" id="sampai" class="form-control">
                   </div>
                   <div class="dropdown flex-md-grow-1 flex-xl-grow-0 m-2">
@@ -50,6 +50,7 @@
               </div>
             </div>
             <div class="col-md-6 grid-margin transparent">
+              <p><i>Data Terakhir pada: <span id="data_terakhir"></span></i></p>
               <div class="row">
                 <div class="col-md-6 mb-4 stretch-card transparent">
                   <div class="card card-light-danger">
@@ -231,7 +232,7 @@
             </div>
           </div>
           <div class="col-12 ">
-            <h3 >Tips Dari AI</h3>
+            <h3 >Tips Dari HighFive</h3>
             <br>
             <div class="row">
               <div class="col-3">
@@ -255,7 +256,7 @@
                   <div class="card-body">
                       <p>Tingkat pernafasan anda saat ini adalah <span id="currentOxy"></span> %. Angka ini tergolong <b id="ketOxy"></b>. <span id="perluOxy"></span> </p>
                          <br>
-                    <a href="/detak" class="btn btn-success">Selengkapnya <i class=" mdi mdi-arrow-collapse-right menu-icon" style="margin-left: 5px; float: right;"></i></a>
+                    <a href="/nafas" class="btn btn-success">Selengkapnya <i class=" mdi mdi-arrow-collapse-right menu-icon" style="margin-left: 5px; float: right;"></i></a>
                   </div>
                 </div>
               </div>
@@ -268,7 +269,7 @@
                   <div class="card-body">
                     <p>Suhu Tubuh anda saat ini adalah <span id="currentSuhu"></span>  °C. Angka ini tergolong <b id="ketSuhu"></b>. <span id="perluSuhu"></span> </p>
                        <br>
-                    <a href="/detak" class="btn btn-success">Selengkapnya <i class=" mdi mdi-arrow-collapse-right menu-icon" style="margin-left: 5px; float: right;"></i></a>
+                    <a href="/suhu" class="btn btn-success">Selengkapnya <i class=" mdi mdi-arrow-collapse-right menu-icon" style="margin-left: 5px; float: right;"></i></a>
                   </div>
                 </div>
               </div>
@@ -281,7 +282,7 @@
                   <div class="card-body">
                     <p>Pergerakan anda saat ini  tergolong <b id="ketAkselo"></b>. <span id="perluAkselo"></span> </p>
                        <br>
-                    <a href="/detak" class="btn btn-success">Selengkapnya <i class=" mdi mdi-arrow-collapse-right menu-icon" style="margin-left: 5px; float: right;"></i></a>
+                    <a href="/akselo" class="btn btn-success">Selengkapnya <i class=" mdi mdi-arrow-collapse-right menu-icon" style="margin-left: 5px; float: right;"></i></a>
                   </div>
                 </div>
               </div>

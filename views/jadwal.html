@@ -6,12 +6,14 @@
         	<div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Penjadwalan Kegiatan Anda <button class="btn btn-success float-right"><i class="mdi mdi-plus" style="margin-top: -3px; float: left;"></i> Tambah</button></h4>
+                  <h4 class="card-title">Penjadwalan Kegiatan Anda <button class="btn btn-success float-right" id="tambahButton" data-toggle="modal" data-target="#tambahJadwalModal">
+                    <i class="mdi mdi-plus" style="margin-top: -3px; float: left;"></i> Tambah
+                  </button></h4>
                   <p class="card-description">
                     Alarm akan diaktifkan sesuai dengan penjadwalan yang anda buat.
                   </p>
                   <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table id="tabel12" class="table table-striped">
                       <thead>
                         <tr>
                           <th>
@@ -29,6 +31,9 @@
                            <th>
                             Uraian Kegiatan
                           </th>
+                           <th>
+                            Status
+                          </th>
                           <th>
                             Aksi
                           </th>
@@ -44,5 +49,102 @@
               </div>
             </div>
 
+              <!-- Modal untuk menambah jadwal -->
+  <div class="modal fade" id="tambahJadwalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Tambah Jadwal</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="judulInput">Judul Kegiatan</label>
+              <input type="text" class="form-control" id="judulInput" placeholder="Masukkan judul kegiatan" required>
+            </div>
+            <div class="form-group">
+              <label for="uraianInput">Uraian Kegiatan</label>
+              <input type="text" class="form-control" id="uraianInput" placeholder="Masukkan uraian kegiatan" required>
+            </div>
+
+            <div class="form-group">
+              <label for="uraianInput">Set Alarm Pada:</label>
+              <input type="datetime-local" class="form-control" id="waktu_alarm" equired>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-primary" onclick="tambahJadwal()">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal untuk mengedit jadwal -->
+  <div class="modal fade" id="editJadwalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Jadwal</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="editJadwalForm">
+            <div class="form-group">
+              <input type="hidden" id="idEdit">
+              <label for="editJudulInput">Judul Kegiatan</label>
+              <input type="text" class="form-control" id="judulEditInput" placeholder="Masukkan judul kegiatan">
+            </div>
+            <div class="form-group">
+              <label for="editUraianInput">Uraian Kegiatan</label>
+              <input type="text" class="form-control" id="uraianEditInput" placeholder="Masukkan uraian kegiatan">
+            </div>
+              <div class="form-group">
+              <label for="uraianInput">Set Alarm Pada:</label>
+              <input type="datetime-local" class="form-control" id="waktu_alarm_edit" equired>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+          <button type="button" class="btn btn-primary" onclick="simpanEditJadwal()">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tambahkan bagian berikut di dalam body tag Anda -->
+<div class="modal fade" id="konfirmasiModal" tabindex="-1" role="dialog" aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="konfirmasiModalLabel">Konfirmasi Penghapusan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="idHapus">
+        <p>Anda yakin ingin menghapus jadwal ini?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-danger" onclick="konfirmasiHapus()">Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
         </div>
 <%- include('footer.html') %>
+
+<script>
+  </script>

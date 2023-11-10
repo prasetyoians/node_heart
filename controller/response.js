@@ -62,7 +62,7 @@ console.log("SELECT * FROM heart WHERE timestamp >='"+dari+"' AND timestamp <='"
 
 async function heartNew(req,res){
 
-	pool.query('SELECT hr FROM heart order by id DESC LIMIT 1', (err, result) => {
+	pool.query('SELECT hr,timestamp FROM heart order by id DESC LIMIT 1', (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -464,6 +464,102 @@ async function pergerakan_sekarang(req,res){
 
 
 
+async function buatJadwal(req,res){
+  const {  judul_kegiatan, uraian_kegiatan,waktu_alarm } = req.body;
+
+  const insertQuery =
+    "INSERT INTO jadwal ( judul_kegiatan, uraian_kegiatan,waktu_alarm) VALUES ($1, $2,$3) RETURNING id_jadwal";
+
+  try {
+    const result = await pool.query(insertQuery, [
+      
+      judul_kegiatan,
+      uraian_kegiatan,
+      waktu_alarm,
+    ]);
+
+    const id_jadwal = result.rows[0].id_jadwal;
+    const response = {
+      message: "Jadwal berhasil ditambahkan",
+      id_jadwal: id_jadwal,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Gagal menambahkan jadwal", error);
+    res.status(500).json({ message: "Gagal menambahkan jadwal" });
+  }
+}
+
+async function getAllJadwal(req, res) {
+  const selectQuery = "SELECT * FROM jadwal ORDER BY id_jadwal DESC";
+
+  try {
+    const result = await pool.query(selectQuery);
+    const jadwal = result.rows;
+    res.status(200).json(jadwal);
+  } catch (error) {
+    console.error("Gagal mengambil jadwal", error);
+    res.status(500).json({ message: "Gagal mengambil jadwal" });
+  }
+}
+
+async function getJadwalById(req,res){
+
+  const id = req.params.id;
+  const selectQuery = "SELECT * FROM jadwal WHERE id_jadwal = "+id;
+
+  try {
+    const result = await pool.query(selectQuery);
+    const jadwal = result.rows;
+    res.status(200).json(jadwal);
+  } catch (error) {
+    console.error("Gagal mengambil jadwal", error);
+    res.status(500).json({ message: "Gagal mengambil jadwal" });
+  }
+
+
+}
+
+async function updateJadwal(req, res) {
+  const id = req.query.id;
+  const judul_kegiatan = req.query.judul_kegiatan;
+  const uraian_kegiatan = req.query.uraian_kegiatan;
+  const waktu_alarm = req.query.waktu_alarm;
+
+  const data = [id,judul_kegiatan,uraian_kegiatan];
+  const updateQuery = "UPDATE jadwal SET judul_kegiatan =' "+judul_kegiatan+"', uraian_kegiatan = ' "+uraian_kegiatan+"', waktu_alarm = '"+waktu_alarm+"' WHERE id_jadwal = "+id;
+
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Jadwal berhasil diperbarui" });
+  } catch (error) {
+    console.error("Gagal memperbarui jadwal", error);
+    res.status(500).json({ message: "Gagal memperbarui jadwal" });
+  }
+}
+
+async function deleteJadwal(req, res) {
+  const id = req.query.id;
+  const deleteQuery = "DELETE FROM jadwal WHERE id_jadwal = "+id;
+
+  try {
+    const result = await pool.query(deleteQuery);
+    if (result.rowCount === 1) {
+      res.status(200).json({ message: "Jadwal berhasil dihapus" });
+    } else {
+      res.status(404).json({ message: "Jadwal tidak ditemukan" });
+    }
+  } catch (error) {
+    console.error("Gagal menghapus jadwal", error);
+    res.status(500).json({ message: "Gagal menghapus jadwal" });
+  }
+}
+
+
+
+
 async function detak(req,res){
 
 
@@ -509,4 +605,32 @@ res.render('views/jadwal',{ currentPath: '/jadwal' });
 }
 
 
-module.exports = {sendDataToSps,reload,getData,index,heartNew,oxyNew,gerakNew,suhuNew,grafikHr,keaktifan_1,keaktifan_2,hrMax,hrMin,oxyMax,oxyMin,sendAkselo,detak,nafas,suhu,akselo,pergerakan_sekarang,jadwal};
+module.exports = {
+  sendDataToSps,
+  reload,
+  getData,
+  index,
+  heartNew,
+  oxyNew,
+  gerakNew,
+  suhuNew,
+  grafikHr,
+  keaktifan_1,
+  keaktifan_2,
+  hrMax,
+  hrMin,
+  oxyMax,
+  oxyMin,
+  sendAkselo,
+  buatJadwal,
+  getAllJadwal,
+  updateJadwal,
+  deleteJadwal,
+  detak,
+  nafas,
+  suhu,
+  akselo,
+  pergerakan_sekarang,
+  jadwal,
+  getJadwalById
+};
