@@ -83,7 +83,8 @@ app.get('/tes', (req, res) => {
 		 	return res.end();
 		 }else{
 		    	res.writeHead(200,{'Content-type':'text/html'});
-		 	res.write(data);
+		   data = replaceIncludes(data, path.join(__dirname, 'views'));
+
 		 	return res.end();	
 		 }
 	});
@@ -93,3 +94,11 @@ app.get('/tes', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port 3000}`)
 })
+
+function replaceIncludes(content, basePath) {
+  // Mencocokkan pola @@include(nama_file) dan menggantinya dengan isi file yang sebenarnya
+  return content.replace(/@@include\(([^)]+)\)/g, (match, p1) => {
+    const includePath = path.join(basePath, p1.trim());
+    return fs.readFileSync(includePath, 'utf8');
+  });
+}
