@@ -24,7 +24,9 @@ app.set('views', __dirname);
 
 
 
-
+app.get('/cek', (req, res) => {
+  res.render('views/index'); // Correct path: "index" inside "views" directory
+});
 
 //page
 app.get('/dashboard', require("./controller/response").index);
