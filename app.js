@@ -73,7 +73,6 @@ app.get('/del-jadwal', require("./controller/response").deleteJadwal);
 
 
 app.get('/tes', (req, res) => {
-http.createServer(function (req, res){
 
 	fs.readFile("views/index.html",function (err, data){
 		 if (err) {
@@ -86,7 +85,7 @@ http.createServer(function (req, res){
 		 	return res.end();	
 		 }
 	});
-});
+
 });
 
 app.listen(port, () => {
