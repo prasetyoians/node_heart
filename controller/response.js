@@ -604,6 +604,14 @@ res.render('views/jadwal',{ currentPath: '/jadwal' });
 
 }
 
+async function cek(req,res){
+
+
+  res.status(200).json({data:'data'});
+
+
+}
+
 
 module.exports = {
   sendDataToSps,
@@ -632,5 +640,6 @@ module.exports = {
   akselo,
   pergerakan_sekarang,
   jadwal,
-  getJadwalById
+  getJadwalById,
+  cek
 };
