@@ -83,7 +83,7 @@ app.get('/tes', (req, res) => {
 		 	return res.end();
 		 }else{
 		    	res.writeHead(200,{'Content-type':'text/html'});
-		   // data = replaceIncludes(data, path.join(__dirname, 'views'));
+		   /data = replaceIncludes(data, "./");
 			console.log(viewPath);
 		 	return res.end();	
 		 }
