@@ -154,33 +154,7 @@ async function sendDataToSps(req,res){
 //const response = await axios.get("https://script.google.com/macros/s/AKfycbwhi0FRPnUyq_5dFZkBcD4na8z0sB1DFYtJ-05DIn_C8l4ezb2NV5CMB_gmeDl2Urv3cg/exec?hr="+hr+"&spo2="+spo2+"&akselox="+akselox+"&akseloy="+akseloy+"&akseloz="+akseloz);
 
 
-
-const json = {
-			"spo2": spo2,
-			"hr": hr,
-			"akselox": akselox,
-			"akseloy": akseloy,
-			"akseloz": akseloz,
-			"suhu": suhu,
-		
-	};
-
-
-	
-
-
-
 const insertQuery = 'INSERT INTO heart(hr, spo2,akselox,akseloy,akseloz,suhu) VALUES($1,$2,$3,$4,$5,$6) RETURNING *';
-
-const userData = {
-			spo2: spo2,
-			hr: hr,
-			akselox: akselox,
-			akseloy: akseloy,
-			akseloz: akseloz,
-			suhu: suhu,
-		
-	};
 
 
 await pool.query(insertQuery, [hr, spo2, akselox,akseloy,akseloz,suhu], (err, res) => {
@@ -195,8 +169,8 @@ await pool.query(insertQuery, [hr, spo2, akselox,akseloy,akseloz,suhu], (err, re
 });
 
 
-console.log(json);;
-//res.status(200).json(json);
+//console.log(json);;
+res.status(200).json(json);
 
 
  
