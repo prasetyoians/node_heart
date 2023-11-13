@@ -3,27 +3,26 @@ const fs = require('fs');
 const pool = require('../koneksi_db/koneksi');
 const http = require('http');
 
+var url = require('url');
+
+
 
 async function index(req,res){
 
-
-const server = http.createServer((req, res) => {
-  fs.readFile('views/index.html', 'utf8', (err, data) => {
-    if (err) {
-      // Jika terjadi kesalahan saat membaca file, kembalikan response 500 Internal Server Error
-      res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Internal Server Error');
-    } else {
-      // Jika berhasil membaca file, kirim response dengan isi file sebagai body
-      res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end(data);
-    }
-  });
-
-//tutup create server	
+http.createServer(function (req, res){
+	
+	fs.readFile("../views/index.html",function (err, data){
+		 if (err) {
+		 	res.writeHead(404,{'Content-type':'text/html'});
+		 	res.write("404 halaman tidak ditemukan");
+		 	return res.end();
+		 }else{
+		 	res.writeHead(200,{'Content-type':'text/html'});
+		 	res.write(data);
+		 	return res.end();	
+		 }
+	});
 });
-
-
 }
 
 
