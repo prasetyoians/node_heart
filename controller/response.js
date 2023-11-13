@@ -166,11 +166,13 @@ await pool.query(insertQuery, [hr, spo2, akselox,akseloy,akseloz,suhu], (err, re
     console.log(`Inserted row with ID: ${res.rows[0].id}`);
   }
   // pool.end();
+
+	
+res.status(200).json({insert:insertQuery});
 });
 
 
 //console.log(json);;
-res.status(200).json(json);
 
 
  
