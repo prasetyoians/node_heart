@@ -196,7 +196,7 @@ await pool.query(insertQuery, [hr, spo2, akselox,akseloy,akseloz,suhu], (err, re
 
 
 console.log(json);;
-res.status(200).json(json);
+//res.status(200).json(json);
 
 
  
