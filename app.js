@@ -76,17 +76,16 @@ app.get('/tes', (req, res) => {
 	
     const viewPath = path.join(__dirname, 'views', 'index.html');
 
-	fs.readFile(viewPath,function (err, data){
+	fs.readFile(viewPath,'utf8',function (err, data){
 		 if (err) {
 		 	res.writeHead(404,{'Content-type':'text/html'});
 		 	res.write("404 halaman tidak ditemukan");
 		 	return res.end();
 		 }else{
-		 	  res.writeHead(200, { 'Content-Type': 'text/html' });
+		     res.writeHead(200, { 'Content-Type': 'text/html' });
 		        // Gunakan ejs.render untuk mengganti placeholder <% include ... %>
 		        const rendered = ejs.render(data, {}, { filename: viewPath });
 		        res.end(rendered);
-		 	return res.end();	
 		 }
 	});
 
