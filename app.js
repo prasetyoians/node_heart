@@ -73,6 +73,6 @@ app.get('/del-jadwal', require("./controller/response").deleteJadwal);
 
 
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+app.listen(process.env.PORT, () => {
+  console.log(`Example app listening on port 5000}`)
 })
