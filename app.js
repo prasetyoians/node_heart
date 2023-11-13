@@ -27,7 +27,7 @@ app.set('views', __dirname);
 
 
 const server = http.createServer((req, res) => {
-  if (req.url === '/cek') {
+  if (req.url === '/cek1') {
     // Jika URL adalah '/render', kita akan merender view
     renderView(res);
   } else {
@@ -62,8 +62,6 @@ app.get('/nafas', require("./controller/response").nafas);
 app.get('/suhu', require("./controller/response").suhu);
 app.get('/akselo', require("./controller/response").akselo);
 app.get('/jadwal', require("./controller/response").jadwal);
-
-app.get('/', require("./controller/response").cek);
 
 
 
