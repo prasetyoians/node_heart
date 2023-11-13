@@ -172,7 +172,6 @@ res.status(200).json({insert:insertQuery});
 });
 
 
-//console.log(json);;
 
 
  
