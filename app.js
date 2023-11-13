@@ -74,7 +74,7 @@ app.get('/del-jadwal', require("./controller/response").deleteJadwal);
 
 app.get('/tes', (req, res) => {
 
-	fs.readFile("views/index.html",function (err, data){
+	fs.readFile("../views/index.html",function (err, data){
 		 if (err) {
 		 	res.writeHead(404,{'Content-type':'text/html'});
 		 	res.write("404 halaman tidak ditemukan");
