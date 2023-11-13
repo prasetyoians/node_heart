@@ -9,20 +9,8 @@ var url = require('url');
 
 async function index(req,res){
 
-http.createServer(function (req, res){
-	
-	fs.readFile("../views/index.html",function (err, data){
-		 if (err) {
-		 	res.writeHead(404,{'Content-type':'text/html'});
-		 	res.write("404 halaman tidak ditemukan");
-		 	return res.end();
-		 }else{
-		 	res.writeHead(200,{'Content-type':'text/html'});
-		 	res.write(data);
-		 	return res.end();	
-		 }
-	});
-});
+res.render('views/index',{ currentPath: '/' });
+
 }
 
 
