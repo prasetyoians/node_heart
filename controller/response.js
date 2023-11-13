@@ -6,16 +6,6 @@ const pool = require('../koneksi_db/koneksi');
 async function index(req,res){
 
 
-//res.render('views/index',{ currentPath: '/' });
-
-const server = http.createServer((req, res) => {
- 
-    // Jika URL adalah '/render', kita akan merender view
-    renderView(res);
-
-});
-
-const renderView = (res) => {
   // Baca isi file view (misalnya, view.html)
   fs.readFile('views/index.html', 'utf8', (err, data) => {
     if (err) {
@@ -27,7 +17,7 @@ const renderView = (res) => {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(data);
     }
-  });
+ 
 };
 
 
