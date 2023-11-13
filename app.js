@@ -82,12 +82,10 @@ app.get('/tes', (req, res) => {
 		 	res.write("404 halaman tidak ditemukan");
 		 	return res.end();
 		 }else{
-		 	res.writeHead(200,{'Content-type':'text/html'});
-		 	res.write(data);
-			    data = data.replace(/@@include\(([^)]+)\)/g, (match, p1) => {
-			          const includePath = path.join(__dirname, 'views', p1.trim());
-			          return fs.readFileSync(includePath, 'utf8');
-			        });
+		 	  res.writeHead(200, { 'Content-Type': 'text/html' });
+		        // Gunakan ejs.render untuk mengganti placeholder <% include ... %>
+		        const rendered = ejs.render(data, {}, { filename: viewPath });
+		        res.end(rendered);
 		 	return res.end();	
 		 }
 	});
