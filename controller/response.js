@@ -6,7 +6,6 @@ const pool = require('../koneksi_db/koneksi');
 async function index(req,res){
 
 
-  // Baca isi file view (misalnya, view.html)
   fs.readFile('views/index.html', 'utf8', (err, data) => {
     if (err) {
       // Jika terjadi kesalahan saat membaca file, kembalikan response 500 Internal Server Error
@@ -17,8 +16,7 @@ async function index(req,res){
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(data);
     }
- 
-};
+  });
 
 
 
