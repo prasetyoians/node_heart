@@ -24,9 +24,34 @@ app.set('views', __dirname);
 
 
 
-app.get('/cek', (req, res) => {
-  res.render('views/index'); // Correct path: "index" inside "views" directory
+const server = http.createServer((req, res) => {
+  if (req.url === '/cek') {
+    // Jika URL adalah '/render', kita akan merender view
+    renderView(res);
+  } else {
+    // Jika URL tidak cocok, kembalikan response 404 Not Found
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Not Found');
+  }
 });
+
+const renderView = (res) => {
+  // Baca isi file view (misalnya, view.html)
+  fs.readFile('views/index.html', 'utf8', (err, data) => {
+    if (err) {
+      // Jika terjadi kesalahan saat membaca file, kembalikan response 500 Internal Server Error
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Internal Server Error');
+    } else {
+      // Jika berhasil membaca file, kirim response dengan isi file sebagai body
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    }
+  });
+};
+
+
+
 
 //page
 app.get('/dashboard', require("./controller/response").index);
