@@ -6,6 +6,7 @@ const pool = require('../koneksi_db/koneksi');
 async function index(req,res){
 
 
+const server = http.createServer((req, res) => {
   fs.readFile('views/index.html', 'utf8', (err, data) => {
     if (err) {
       // Jika terjadi kesalahan saat membaca file, kembalikan response 500 Internal Server Error
@@ -18,6 +19,8 @@ async function index(req,res){
     }
   });
 
+//tutup create server	
+});
 
 
 }
