@@ -8,16 +8,12 @@ async function index(req,res){
 
 //res.render('views/index',{ currentPath: '/' });
 
-// const server = http.createServer((req, res) => {
-//   if (req.url === '/cek') {
-//     // Jika URL adalah '/render', kita akan merender view
-//     renderView(res);
-//   } else {
-//     // Jika URL tidak cocok, kembalikan response 404 Not Found
-//     res.writeHead(404, { 'Content-Type': 'text/plain' });
-//     res.end('Not Found');
-//   }
-// });
+const server = http.createServer((req, res) => {
+ 
+    // Jika URL adalah '/render', kita akan merender view
+    renderView(res);
+
+});
 
 const renderView = (res) => {
   // Baca isi file view (misalnya, view.html)
