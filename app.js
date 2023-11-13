@@ -84,6 +84,10 @@ app.get('/tes', (req, res) => {
 		 }else{
 		 	res.writeHead(200,{'Content-type':'text/html'});
 		 	res.write(data);
+			    data = data.replace(/@@include\(([^)]+)\)/g, (match, p1) => {
+			          const includePath = path.join(__dirname, 'views', p1.trim());
+			          return fs.readFileSync(includePath, 'utf8');
+			        });
 		 	return res.end();	
 		 }
 	});
