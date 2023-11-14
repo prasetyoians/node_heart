@@ -75,6 +75,7 @@ app.get('/del-jadwal', require("./controller/response").deleteJadwal);
 app.get('/tes', (req, res) => {
 	
     const viewPath = path.join(__dirname, 'views', 'index.html');
+    const publicPath = path.join(__dirname, 'public');
 
 	fs.readFile(viewPath,'utf8',function (err, data){
 		 if (err) {
@@ -82,9 +83,9 @@ app.get('/tes', (req, res) => {
 		 	res.write("404 halaman tidak ditemukan");
 		 	return res.end();
 		 }else{
-			res.writeHead(200, { 'Content-Type': 'text/html' });
+			 res.writeHead(200, { 'Content-Type': 'text/html' });
 		        // Use custom function to replace placeholders with actual content
-		        data = replaceIncludes(data, 'header.html', 'footer.html');
+		        data = replaceIncludes(data, 'header.html', 'footer.html', { publicPath: publicPath, name: 'dashboard' });
 		        res.end(data);
 		 }
 	});
@@ -95,17 +96,18 @@ app.listen(port, () => {
   console.log(`Example app listening on port 3000}`)
 })
 
-function replaceIncludes(content, headerFileName, footerFileName) {
+
+function replaceIncludes(content, headerFileName, footerFileName, variables) {
   // Read the content of the include files and replace the placeholders
   const headerPath = path.join(__dirname, 'views', headerFileName);
   const footerPath = path.join(__dirname, 'views', footerFileName);
-  
-  const headerContent = fs.readFileSync(headerPath, 'utf8');
-  const footerContent = fs.readFileSync(footerPath, 'utf8');
-  
+
+  const headerContent = ejs.render(fs.readFileSync(headerPath, 'utf8'), variables);
+  const footerContent = ejs.render(fs.readFileSync(footerPath, 'utf8'), variables);
+
   // Replace placeholders in the main content
-  content = content.replace(/<%- include\('header.html'\) %>/g, headerContent);
-  content = content.replace(/<%- include\('footer.html'\) %>/g, footerContent);
+  content = content.replace(/<%- include\('header.html', (.+)\) %>/g, headerContent);
+  content = content.replace(/<%- include\('footer.html', (.+)\) %>/g, footerContent);
 
   return content;
 }
