@@ -82,11 +82,10 @@ app.get('/tes', (req, res) => {
 		 	res.write("404 halaman tidak ditemukan");
 		 	return res.end();
 		 }else{
-		    	res.writeHead(200,{'Content-type':'text/html'});
-			 res.write(data);
-   		 	data = replaceIncludes(data, 'header.html', 'footer.html');
-			console.log(viewPath);
-		 	return res.end();	
+			  res.writeHead(200, { 'Content-Type': 'text/html' });
+			        // Use custom function to replace placeholders with actual content
+			        data = replaceIncludes(data, 'header.html', 'footer.html');
+			        res.end(data);
 		 }
 	});
 
