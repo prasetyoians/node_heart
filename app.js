@@ -84,7 +84,7 @@ app.get('/tes', (req, res) => {
 		 }else{
 		    	res.writeHead(200,{'Content-type':'text/html'});
 			 res.write(data);
-		   // data = replaceIncludes(data, "./");
+   		 	data = replaceIncludes(data, 'header.html', 'footer.html');
 			console.log(viewPath);
 		 	return res.end();	
 		 }
@@ -96,10 +96,17 @@ app.listen(port, () => {
   console.log(`Example app listening on port 3000}`)
 })
 
-function replaceIncludes(content, basePath) {
-  // Mencocokkan pola @@include(nama_file) dan menggantinya dengan isi file yang sebenarnya
-  return content.replace(/@@include\(([^)]+)\)/g, (match, p1) => {
-    const includePath = path.join(basePath, p1.trim());
-    return fs.readFileSync(includePath, 'utf8');
-  });
+function replaceIncludes(content, headerFileName, footerFileName) {
+  // Read the content of the include files and replace the placeholders
+  const headerPath = path.join(__dirname, 'views', headerFileName);
+  const footerPath = path.join(__dirname, 'views', footerFileName);
+  
+  const headerContent = fs.readFileSync(headerPath, 'utf8');
+  const footerContent = fs.readFileSync(footerPath, 'utf8');
+  
+  // Replace placeholders in the main content
+  content = content.replace(/<%- include\('header.html'\) %>/g, headerContent);
+  content = content.replace(/<%- include\('footer.html'\) %>/g, footerContent);
+
+  return content;
 }
