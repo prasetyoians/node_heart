@@ -75,7 +75,7 @@ app.get('/del-jadwal', require("./controller/response").deleteJadwal);
 app.get('/tes', (req, res) => {
 	//  res.sendFile(path.join(__dirname, 'views', 'index.html'));
 
- //    const viewPath = path.join(__dirname, 'views', 'index.html');
+   const viewPath = path.join(__dirname, 'views', 'index.html');
     const publicPath = path.join(__dirname, 'public');
 
 	fs.readFile(viewPath,'utf8',function (err, data){
