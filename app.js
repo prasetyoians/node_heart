@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
 
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 
@@ -73,22 +73,23 @@ app.get('/del-jadwal', require("./controller/response").deleteJadwal);
 
 
 app.get('/tes', (req, res) => {
-	
-    const viewPath = path.join(__dirname, 'views', 'index.html');
-    const publicPath = path.join(__dirname, 'public');
+	  res.sendFile(path.join(__dirname, 'views', 'index.html'));
 
-	fs.readFile(viewPath,'utf8',function (err, data){
-		 if (err) {
-		 	res.writeHead(404,{'Content-type':'text/html'});
-		 	res.write("404 halaman tidak ditemukan");
-		 	return res.end();
-		 }else{
-			 res.writeHead(200, { 'Content-Type': 'text/html' });
-		        // Use custom function to replace placeholders with actual content
-		        data = replaceIncludes(data, 'header.html', 'footer.html', { publicPath: publicPath, name: 'dashboard' });
-		        res.end(data);
-		 }
-	});
+ //    const viewPath = path.join(__dirname, 'views', 'index.html');
+ //    const publicPath = path.join(__dirname, 'public');
+
+	// fs.readFile(viewPath,'utf8',function (err, data){
+	// 	 if (err) {
+	// 	 	res.writeHead(404,{'Content-type':'text/html'});
+	// 	 	res.write("404 halaman tidak ditemukan");
+	// 	 	return res.end();
+	// 	 }else{
+	// 		 res.writeHead(200, { 'Content-Type': 'text/html' });
+	// 	        // Use custom function to replace placeholders with actual content
+	// 	        data = replaceIncludes(data, 'header.html', 'footer.html', { publicPath: publicPath, name: 'dashboard' });
+	// 	        res.end(data);
+	// 	 }
+	// });
 
 });
 
