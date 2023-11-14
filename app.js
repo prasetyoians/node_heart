@@ -73,23 +73,23 @@ app.get('/del-jadwal', require("./controller/response").deleteJadwal);
 
 
 app.get('/tes', (req, res) => {
-	  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+	//  res.sendFile(path.join(__dirname, 'views', 'index.html'));
 
  //    const viewPath = path.join(__dirname, 'views', 'index.html');
- //    const publicPath = path.join(__dirname, 'public');
+    const publicPath = path.join(__dirname, 'public');
 
-	// fs.readFile(viewPath,'utf8',function (err, data){
-	// 	 if (err) {
-	// 	 	res.writeHead(404,{'Content-type':'text/html'});
-	// 	 	res.write("404 halaman tidak ditemukan");
-	// 	 	return res.end();
-	// 	 }else{
-	// 		 res.writeHead(200, { 'Content-Type': 'text/html' });
-	// 	        // Use custom function to replace placeholders with actual content
-	// 	        data = replaceIncludes(data, 'header.html', 'footer.html', { publicPath: publicPath, name: 'dashboard' });
-	// 	        res.end(data);
-	// 	 }
-	// });
+	fs.readFile(viewPath,'utf8',function (err, data){
+		 if (err) {
+		 	res.writeHead(404,{'Content-type':'text/html'});
+		 	res.write("404 halaman tidak ditemukan");
+		 	return res.end();
+		 }else{
+			 res.writeHead(200, { 'Content-Type': 'text/html' });
+		        // Use custom function to replace placeholders with actual content
+		        data = replaceIncludes(data, 'header.html', 'footer.html', { publicPath: publicPath, namePage: 'dashboard' });
+		        res.end(data);
+		 }
+	});
 
 });
 
