@@ -75,6 +75,11 @@ app.get('/update-jadwal', require("./controller/response").updateJadwal);
 app.get('/del-jadwal', require("./controller/response").deleteJadwal);
 
 
+
+
+//cek jadwal
+app.get('/cek_jadwal', require("./controller/response").cek_jadwal);
+
 // app.get('/tes', (req, res) => {
 // 	//  res.sendFile(path.join(__dirname, 'views', 'index.html'));
 

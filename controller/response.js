@@ -470,7 +470,7 @@ async function buatJadwal(req,res){
   const {  judul_kegiatan, uraian_kegiatan,waktu_alarm } = req.body;
 
   const insertQuery =
-    "INSERT INTO jadwal ( judul_kegiatan, uraian_kegiatan,waktu_alarm) VALUES ($1, $2,$3) RETURNING id_jadwal";
+    "INSERT INTO jadwal ( judul_kegiatan, uraian_kegiatan,waktu_alarm,status) VALUES ($1, $2,$3,0) RETURNING id_jadwal";
 
   try {
     const result = await pool.query(insertQuery, [
@@ -494,7 +494,12 @@ async function buatJadwal(req,res){
 }
 
 async function getAllJadwal(req, res) {
-  const selectQuery = "SELECT * FROM jadwal ORDER BY id_jadwal DESC";
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+
+  
+  const selectQuery = "SELECT * FROM jadwal WHERE waktu_alarm >='"+dari+"' AND waktu_alarm <='"+sampai+"'  ORDER BY id_jadwal DESC ";
 
   try {
     const result = await pool.query(selectQuery);
@@ -615,6 +620,88 @@ async function cek(req,res){
 }
 
 
+async function cek_jadwal(req,res){
+
+  const currentDate = new Date();
+
+// Mendapatkan tanggal
+const day = currentDate.getDate();
+const month = currentDate.getMonth() + 1; // Perlu ditambah 1 karena indeks bulan dimulai dari 0
+const year = currentDate.getFullYear();
+
+// Mendapatkan waktu
+const hours = currentDate.getHours();
+const minutes = currentDate.getMinutes();
+const seconds = currentDate.getSeconds();
+
+
+var timenow = `${day}-${month}-${year} ${hours}:${minutes}`;
+
+    var array_waktu = [];
+  pool.query("SELECT * FROM jadwal", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+
+
+  for(i = 0; i < data.length; i++){
+    var waktu = dateFormatToData(data[i].waktu_alarm);
+    var statusnya = data[i].status;
+    var judul = data[i].judul_kegiatan;
+
+    if(waktu == timenow && statusnya == 0){
+       var json_response = "1";
+
+        update_cek_jadwal(data[i].waktu_alarm,json_response);
+    
+    }else{
+      var json_response = "0";
+    }
+
+
+  }
+  // Pass data to your HTML rendering function
+
+    // console.log(array_waktu);
+
+  res.status(200).json([{json_response:json_response}]);
+
+
+});
+
+async function update_cek_jadwal(waktu,status){
+     await pool.query("UPDATE jadwal SET status = "+status+" WHERE waktu_alarm ='"+waktu+"' "  , (err, result) => {
+      
+        if (err) {
+          console.error(err);
+          return;
+        }
+      });
+}
+
+
+
+}
+
+
+function dateFormatToData(inputDate) {
+  const date = new Date(inputDate);
+  
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = String(date.getFullYear());
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${day}-${month}-${year} ${hours}:${minutes}`;
+}
+
+
+
+
 module.exports = {
   sendDataToSps,
   reload,
@@ -643,5 +730,6 @@ module.exports = {
   pergerakan_sekarang,
   jadwal,
   getJadwalById,
-  cek
+  cek,
+  cek_jadwal
 };

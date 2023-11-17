@@ -83,7 +83,7 @@ const seconds = currentDate.getSeconds();
 
             pergerakan_sekarang(0,0);
 
-              getAllJadwal();
+              getAllJadwal(0,0);
             
 
         });
@@ -955,6 +955,7 @@ function update_tgl(){
             suhu_page(dari,sampai);
             akselo_page(dari,sampai);
             pergerakan_sekarang(dari,sampai);
+            getAllJadwal(dari,sampai);
 
 
 }
@@ -1649,9 +1650,14 @@ function update_tgl(){
   });
 }
 
-    function getAllJadwal() {
+    function getAllJadwal(dari,sampai) {
+
+      if(dari == 0 || sampai == 0){
+        dari = `${year}-${month}-${day} 00:00:00`;
+        sampai = `${year}-${month}-${day} 23:59:59`;
+      }
       $.ajax({
-        url: "/getAll-jadwal", 
+        url: "/getAll-jadwal?dari="+dari+"&sampai="+sampai, 
         method: "GET",
         dataType: "JSON",
         success: function(data) {
