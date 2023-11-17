@@ -1641,7 +1641,7 @@ function update_tgl(){
       $("#tambahJadwalModal").modal("hide");
       
       // memperbarui tampilan jadwal
-      getAllJadwal(); 
+      getAllJadwal(0,0); 
     },
     error: function(error) {
       // Menangani kesalahan jika ada
@@ -1652,10 +1652,11 @@ function update_tgl(){
 
     function getAllJadwal(dari,sampai) {
 
-      if(dari == 0 || sampai == 0){
-        dari = `${year}-${month}-${day} 00:00:00`;
-        sampai = `${year}-${month}-${day} 23:59:59`;
-      }
+       if(dari == 0 || sampai == 0){
+            dari = `${year}-${month}-${day}T00:00:00`;
+            sampai = `${year}-${month}-${day}T23:59:59`;
+          }
+
       $.ajax({
         url: "/getAll-jadwal?dari="+dari+"&sampai="+sampai, 
         method: "GET",
@@ -1736,7 +1737,7 @@ console.log(id);
       // Handle respon dari server, mungkin tampilkan pesan sukses atau perbarui tabel jika perlu.
       console.log(response);
       $("#editJadwalModal").modal("hide"); // Sembunyikan modal setelah berhasil menyimpan.
-      getAllJadwal(); // Perbarui tabel setelah menyimpan perubahan.
+      getAllJadwal(0,0); // Perbarui tabel setelah menyimpan perubahan.
     },
     error: function (error) {
       // Handle error, tampilkan pesan kesalahan jika diperlukan.
@@ -1762,7 +1763,7 @@ function konfirmasiHapus() {
     success: function (response) {
       // Handle respon dari server, mungkin tampilkan pesan sukses atau perbarui tabel jika perlu.
       console.log(response);
-      getAllJadwal(); // Perbarui tabel setelah menghapus.
+      getAllJadwal(0,0); // Perbarui tabel setelah menghapus.
       // Sembunyikan modal konfirmasi setelah penghapusan
       $('#konfirmasiModal').modal('hide');
     },

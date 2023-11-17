@@ -500,7 +500,7 @@ async function getAllJadwal(req, res) {
 
   
   const selectQuery = "SELECT * FROM jadwal WHERE waktu_alarm >='"+dari+"' AND waktu_alarm <='"+sampai+"'  ORDER BY id_jadwal DESC ";
-
+  console.log(selectQuery);
   try {
     const result = await pool.query(selectQuery);
     const jadwal = result.rows;
