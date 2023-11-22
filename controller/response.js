@@ -5,6 +5,9 @@ const http = require('http');
 
 var url = require('url');
 
+const jwt = require('jsonwebtoken');
+const secretKey = "yourSecretKey"; // Ganti dengan kunci rahasia yang kuat
+
 
 
 async function index(req,res){
@@ -136,7 +139,19 @@ async function gerakNew(req,res){
 }
 
 
+function count_users(nama){
 
+  var arr_hasil = [];
+  return new Promise((resolve, reject) => {
+  pool.query("SELECT count(*) as counts FROM users WHERE nama='"+nama+"' ", (err, result) => {
+ 
+  const hasil = result.rows[0].counts;
+   resolve(hasil);
+
+    });
+  });
+
+}
 
 
 async function sendDataToSps(req,res){
@@ -152,9 +167,20 @@ async function sendDataToSps(req,res){
   var akseloy = req.query.akseloy;
   var akseloz = req.query.akseloz;
   var suhu = req.query.suhu;
+  var encoded = req.query.encoded;
 
 //const response = await axios.get("https://script.google.com/macros/s/AKfycbwhi0FRPnUyq_5dFZkBcD4na8z0sB1DFYtJ-05DIn_C8l4ezb2NV5CMB_gmeDl2Urv3cg/exec?hr="+hr+"&spo2="+spo2+"&akselox="+akselox+"&akseloy="+akseloy+"&akseloz="+akseloz);
 
+
+
+  let decoded = verifyToken(encoded);
+  //tambahono fungsi nggo nge count data heart seng podo jeneng e ian
+  var c = await count_users(decoded.nama);
+
+
+if (c > 0) {
+
+  
 
 
 const json = {
@@ -163,12 +189,13 @@ const json = {
 			"akselox": akselox,
 			"akseloy": akseloy,
 			"akseloz": akseloz,
-			"suhu": suhu,
+      "suhu": suhu,
+      "encoded": encoded,
+      "decoded_nama": decoded.nama,
+      "pesan": "username ada, anda boleh memasukan data",
 		
 	};
 
-
-	
 
 
 
@@ -186,7 +213,7 @@ const userData = {
 
 
 await pool.query(insertQuery, [hr, spo2, akselox,akseloy,akseloz,suhu], (err, res) => {
-    console.log(insertQuery);
+    // console.log(insertQuery);
 	
   if (err) {
     console.error(err);
@@ -199,6 +226,10 @@ await pool.query(insertQuery, [hr, spo2, akselox,akseloy,akseloz,suhu], (err, re
 
 console.log(json);;
 res.status(200).json(json);
+}else{
+res.status(200).json({pesan:"Username tidak ada, anda tidak boleh memasukan data."});
+
+}
 
 
  
@@ -698,6 +729,33 @@ function dateFormatToData(inputDate) {
 
   return `${day}-${month}-${year} ${hours}:${minutes}`;
 }
+
+
+
+
+// Function to verify a JWT
+function verifyToken(token) {
+  try {
+    // Verify the token using the secret key
+    const decoded = jwt.verify(token, secretKey);
+
+    // If verification is successful, return the decoded payload
+    return decoded;
+  } catch (error) {
+    // If verification fails (token is invalid or expired), throw an error
+    throw error;
+  }
+}
+
+
+function generateToken(payload) {
+  // Create a token with the given payload and sign it with the secret key
+  const token = jwt.sign(payload, secretKey); // Token expires in 1 hour
+
+  return token;
+}
+
+
 
 
 
