@@ -190,16 +190,18 @@ const json = {
 			"akseloy": akseloy,
 			"akseloz": akseloz,
       "suhu": suhu,
+      "id_user": decoded.id_user,
       "encoded": encoded,
       "decoded_nama": decoded.nama,
+      "decoded": decoded,
       "pesan": "username ada, anda boleh memasukan data",
 		
 	};
 
+var id_user = decoded.id_user;
 
 
-
-const insertQuery = 'INSERT INTO heart(hr, spo2,akselox,akseloy,akseloz,suhu) VALUES($1,$2,$3,$4,$5,$6) RETURNING *';
+const insertQuery = 'INSERT INTO heart(hr, spo2,akselox,akseloy,akseloz,suhu,id_user) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *';
 
 const userData = {
 			spo2: spo2,
@@ -207,12 +209,13 @@ const userData = {
 			akselox: akselox,
 			akseloy: akseloy,
 			akseloz: akseloz,
-			suhu: suhu,
+      suhu: suhu,
+			id_user:  id_user,
 		
 	};
 
 
-await pool.query(insertQuery, [hr, spo2, akselox,akseloy,akseloz,suhu], (err, res) => {
+await pool.query(insertQuery, [hr, spo2, akselox,akseloy,akseloz,suhu,id_user], (err, res) => {
     // console.log(insertQuery);
 	
   if (err) {
@@ -411,6 +414,7 @@ async function sendAkselo(req,res){
 
   var modus = req.query.modus;
   var nomor = req.query.nomor;
+  var enc = req.query.enc;
 
 var keterangan = "";
 
@@ -423,31 +427,39 @@ if (nomor == 1) {
 }
 
 
+  let decoded = verifyToken(enc);
+
+
 
 const json = {
       "modus": modus,
       "keterangan": keterangan,
       "nomor": nomor,
+      "enc": enc,
+      "enc_nama": decoded.nama,
+      "enc_id_user": decoded.id_user,
       
     
   };
 
 
   
+var id_user = decoded.id_user;
 
 
-
-const insertQuery = 'INSERT INTO akselo (modus, keterangan,nomor) VALUES($1,$2,$3) RETURNING *';
+const insertQuery = 'INSERT INTO akselo (modus, keterangan,nomor,id_user) VALUES($1,$2,$3,$4) RETURNING *';
 
 const userData = {
       modus: modus,
       keterangan: keterangan,
       nomor: nomor,
+      id_user: id_user,
     
   };
 
 
-await pool.query(insertQuery, [modus, keterangan, nomor], (err, res) => {
+
+await pool.query(insertQuery, [modus, keterangan, nomor,id_user], (err, res) => {
     console.log(insertQuery);
   
   if (err) {
