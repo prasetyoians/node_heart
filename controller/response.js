@@ -10,16 +10,147 @@ const secretKey = "yourSecretKey"; // Ganti dengan kunci rahasia yang kuat
 
 
 
-async function index(req,res){
 
-res.render('views/index',{ currentPath: '/' });
+
+
+// Konfigurasi passport untuk otentikasi lokal
+
+function count_user_pass(username,password){
+
+  var arr_hasil = [];
+  return new Promise((resolve, reject) => {
+  pool.query("SELECT count(*) as counts FROM users WHERE username='"+username+"' AND  password ='"+password+"' ", (err, result) => {
+ 
+  const hasil = result.rows[0].counts;
+   resolve(hasil);
+
+    });
+  });
+}
+
+
+async function login(req,res){
+
+res.render('views/login');
+
+}
+
+async function login_form(req,res){
+  const username = req.body.username;
+  const password = req.body.password;
+
+console.log("username: "+username);
+console.log("pass: "+password);
+
+
+let c = await count_user_pass(username,password);
+
+console.log(c);
+  if (c > 0) {
+
+    pool.query("SELECT * FROM users WHERE username='"+username+"' AND  password ='"+password+"' ORDER BY id_user DESC LIMIT 1", (err, result) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    const data = result.rows;
+   
+     req.session.user = { id_user: data[0].id_user, username: data[0].username };
+    res.status(200).json({pesan:"LOGIN BERHASIL",status:1});
+
+  });
+
+
+
+}else{
+  console.log("username pass salah");
+    res.status(200).json({pesan:"LOGIN BERHASIL",status:0});
+
+}
+
+}
+
+async function logout(req,res){
+    
+     req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+    res.redirect('/login');
+      
+    }
+  });
+
+}
+
+
+async function register(req,res){
+  pool.query('SELECT * FROM alat ', (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function 
+
+
+res.render('views/register',{
+  data:data,
+});
+});
+
+}
+
+async function register_form(req,res){
+ const username = req.body.username;
+  const password = req.body.password;
+  const nama = req.body.nama;
+  const bulan = req.body.bulan;
+  const hari = req.body.hari;
+  const id_alat = req.body.id_alat;
+
+
+
+const insertQuery = 'INSERT INTO users(username, password,nama,bulan,hari,id_alat) VALUES($1,$2,$3,$4,$5,$6) RETURNING *';
+
+ const kirim = await pool.query(insertQuery, [username, password,nama,bulan,hari,id_alat]);
+    // console.log(insertQuery);
+  console.log(kirim);
+  if (kirim.rowCount !== 1) {
+ 
+     res.json({pesan:"REG GAGAL",status:0});
+  } else {
+    res.status(200).json({pesan:"REG BERHASIL",status:1});
+
+  }
+  // pool.end();
+
+
+  }
+
+
+
+async function index(req,res){
+  const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.user;
+
+  if (!req.session.user) {
+    res.redirect('/login');
+  }else{
+
+res.render('views/index',{ currentPath: '/' ,session:userData});
+
+  }
+
+
 
 }
 
 
 async function getData(req,res){
-
-	pool.query('SELECT * FROM heart', (err, result) => {
+let id_user = req.session.user.id_user;
+	pool.query('SELECT * FROM heart WHERE id_user='+id_user, (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -44,10 +175,10 @@ async function reload(req,res){
   var dari = req.query.dari;
   var sampai = req.query.sampai;
 
+let id_user = req.session.user.id_user;
   
-console.log("SELECT * FROM heart WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' ");
 
-	pool.query("SELECT * FROM heart WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' ", (err, result) => {
+	pool.query("SELECT * FROM heart WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' AND  id_user="+id_user, (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -66,8 +197,9 @@ console.log("SELECT * FROM heart WHERE timestamp >='"+dari+"' AND timestamp <='"
 
 
 async function heartNew(req,res){
+let id_user = req.session.user.id_user;
 
-	pool.query('SELECT hr,timestamp FROM heart order by id DESC LIMIT 1', (err, result) => {
+	pool.query('SELECT hr,timestamp FROM heart WHERE id_user='+id_user+' order by id DESC LIMIT 1', (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -84,8 +216,9 @@ async function heartNew(req,res){
 
 
 async function oxyNew(req,res){
+let id_user = req.session.user.id_user;
 
-  pool.query('SELECT spo2 FROM heart order by id DESC LIMIT 1', (err, result) => {
+  pool.query('SELECT spo2 FROM heart WHERE id_user='+id_user+' order by id DESC LIMIT 1', (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -103,8 +236,9 @@ async function oxyNew(req,res){
 
 
 async function suhuNew(req,res){
+let id_user = req.session.user.id_user;
 
-  pool.query('SELECT suhu FROM heart order by id DESC LIMIT 1', (err, result) => {
+  pool.query('SELECT suhu FROM heart WHERE id_user'+id_user+' order by id DESC LIMIT 1', (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -122,8 +256,9 @@ async function suhuNew(req,res){
 
 
 async function gerakNew(req,res){
+let id_user = req.session.user.id_user;
 
-  pool.query('SELECT nomor FROM akselo order by id_akselo DESC LIMIT 1', (err, result) => {
+  pool.query('SELECT nomor FROM akselo  WHERE id_user='+id_user+' order by id_akselo DESC LIMIT 1', (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -139,6 +274,7 @@ async function gerakNew(req,res){
 }
 
 
+
 function count_users(nama){
 
   var arr_hasil = [];
@@ -147,6 +283,18 @@ function count_users(nama){
  
   const hasil = result.rows[0].counts;
    resolve(hasil);
+
+    });
+  });
+}
+
+async function cari_user_by_kode_alat(kode_alat){
+ var arr_hasil = [];
+  return new Promise((resolve, reject) => {
+  pool.query("SELECT b.id_user FROM alat as a INNER JOIN users as b on a.id_alat = b.id_alat  WHERE a.kode_alat='"+kode_alat+"' ", (err, result) => {
+ 
+  const id_user = result.rows[0].id_user;
+   resolve(id_user);
 
     });
   });
@@ -175,10 +323,10 @@ async function sendDataToSps(req,res){
 
   let decoded = verifyToken(encoded);
   //tambahono fungsi nggo nge count data heart seng podo jeneng e ian
-  var c = await count_users(decoded.nama);
+  var id_user = await cari_user_by_kode_alat(decoded.kode_alat);
 
 
-if (c > 0) {
+if (id_user !== null) {
 
   
 
@@ -190,15 +338,13 @@ const json = {
 			"akseloy": akseloy,
 			"akseloz": akseloz,
       "suhu": suhu,
-      "id_user": decoded.id_user,
+      "kode_alat": decoded.kode_alat,
       "encoded": encoded,
-      "decoded_nama": decoded.nama,
       "decoded": decoded,
       "pesan": "username ada, anda boleh memasukan data",
 		
 	};
 
-var id_user = decoded.id_user;
 
 
 const insertQuery = 'INSERT INTO heart(hr, spo2,akselox,akseloy,akseloz,suhu,id_user) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *';
@@ -248,9 +394,11 @@ async function grafikHr(req,res){
 
   var dari = req.query.dari;
   var sampai = req.query.sampai;
+let id_user = req.session.user.id_user;
 
 
-  pool.query("SELECT * FROM heart WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' ", (err, result) => {
+
+  pool.query("SELECT * FROM heart WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' AND id_user="+id_user, (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -279,7 +427,10 @@ async function keaktifan_1(req,res){
   var dari = req.query.dari;
   var sampai = req.query.sampai;
 
-  pool.query("SELECT nomor, COUNT(id_akselo) AS counts FROM akselo WHERE created_at >='"+dari+"' AND created_at <='"+sampai+"' GROUP BY nomor", (err, result) => {
+let id_user = req.session.user.id_user;
+
+
+  pool.query("SELECT nomor, COUNT(id_akselo) AS counts FROM akselo WHERE created_at >='"+dari+"' AND created_at <='"+sampai+"' AND id_user="+id_user+" GROUP BY nomor", (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -301,7 +452,9 @@ async function keaktifan_2(req,res){
 
   var dari = req.query.dari;
   var sampai = req.query.sampai;
-  pool.query("SELECT nomor, COUNT(nomor) AS counts FROM akselo WHERE created_at >='"+dari+"' AND created_at <='"+sampai+"' GROUP BY nomor ORDER BY counts DESC LIMIT 1", (err, result) => {
+let id_user = req.session.user.id_user;
+
+  pool.query("SELECT nomor, COUNT(nomor) AS counts FROM akselo WHERE created_at >='"+dari+"' AND created_at <='"+sampai+"' AND id_user="+id_user+" GROUP BY nomor ORDER BY counts DESC LIMIT 1", (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -321,8 +474,9 @@ async function hrMax(req,res){
 
   var dari = req.query.dari;
   var sampai = req.query.sampai;
+let id_user = req.session.user.id_user;
 
-  pool.query("SELECT max(hr) as max FROM heart  WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' ", (err, result) => {
+  pool.query("SELECT max(hr) as max FROM heart  WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' AND id_user="+id_user, (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -342,9 +496,10 @@ async function hrMin(req,res){
 
   var dari = req.query.dari;
   var sampai = req.query.sampai;
+let id_user = req.session.user.id_user;
 
 
-  pool.query("SELECT min(hr) as min FROM heart  WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' ", (err, result) => {
+  pool.query("SELECT min(hr) as min FROM heart  WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' AND id_user="+id_user, (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -366,10 +521,11 @@ async function oxyMax(req,res){
 
   var dari = req.query.dari;
   var sampai = req.query.sampai;
+let id_user = req.session.user.id_user;
 
 
 
-  pool.query("SELECT max(spo2) as max FROM heart  WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' ", (err, result) => {
+  pool.query("SELECT max(spo2) as max FROM heart  WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' AND id_user="+id_user, (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -389,8 +545,9 @@ async function oxyMin(req,res){
   var dari = req.query.dari;
   var sampai = req.query.sampai;
 
+let id_user = req.session.user.id_user;
 
-  pool.query("SELECT min(spo2) as min FROM heart  WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' ", (err, result) => {
+  pool.query("SELECT min(spo2) as min FROM heart  WHERE timestamp >='"+dari+"' AND timestamp <='"+sampai+"' AND id_user="+id_user, (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -429,33 +586,25 @@ if (nomor == 1) {
 
   let decoded = verifyToken(enc);
 
-
+var id_user = await cari_user_by_kode_alat(decoded.kode_alat);
 
 const json = {
       "modus": modus,
       "keterangan": keterangan,
       "nomor": nomor,
       "enc": enc,
-      "enc_nama": decoded.nama,
-      "enc_id_user": decoded.id_user,
+      "enc_kode_alat": decoded.kode_alat,
+      "id_user": decoded.id_user,
       
     
   };
 
 
-  
-var id_user = decoded.id_user;
+
+
 
 
 const insertQuery = 'INSERT INTO akselo (modus, keterangan,nomor,id_user) VALUES($1,$2,$3,$4) RETURNING *';
-
-const userData = {
-      modus: modus,
-      keterangan: keterangan,
-      nomor: nomor,
-      id_user: id_user,
-    
-  };
 
 
 
@@ -488,10 +637,11 @@ res.status(200).json(json);
 
 
 async function pergerakan_sekarang(req,res){
+let id_user = req.session.user.id_user;
 
   var dari = req.query.dari;
   var sampai = req.query.sampai;
-  pool.query("SELECT * FROM akselo WHERE created_at >='"+dari+"' AND created_at <='"+sampai+"' ", (err, result) => {
+  pool.query("SELECT * FROM akselo WHERE created_at >='"+dari+"' AND created_at <='"+sampai+"' and id_user="+id_user, (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -511,16 +661,19 @@ async function pergerakan_sekarang(req,res){
 
 async function buatJadwal(req,res){
   const {  judul_kegiatan, uraian_kegiatan,waktu_alarm } = req.body;
+let id_user = req.session.user.id_user;
+
 
   const insertQuery =
-    "INSERT INTO jadwal ( judul_kegiatan, uraian_kegiatan,waktu_alarm,status) VALUES ($1, $2,$3,0) RETURNING id_jadwal";
-
+    "INSERT INTO jadwal ( judul_kegiatan, uraian_kegiatan,waktu_alarm,status,id_user) VALUES ($1, $2,$3,0,$4) RETURNING id_jadwal";
+console.log(insertQuery);
   try {
     const result = await pool.query(insertQuery, [
       
       judul_kegiatan,
       uraian_kegiatan,
       waktu_alarm,
+      id_user,
     ]);
 
     const id_jadwal = result.rows[0].id_jadwal;
@@ -540,9 +693,10 @@ async function getAllJadwal(req, res) {
 
   var dari = req.query.dari;
   var sampai = req.query.sampai;
+let id_user = req.session.user.id_user;
 
   
-  const selectQuery = "SELECT * FROM jadwal WHERE waktu_alarm >='"+dari+"' AND waktu_alarm <='"+sampai+"'  ORDER BY id_jadwal DESC ";
+  const selectQuery = "SELECT * FROM jadwal WHERE waktu_alarm >='"+dari+"' AND waktu_alarm <='"+sampai+"' AND id_user="+id_user+"  ORDER BY id_jadwal DESC ";
   console.log(selectQuery);
   try {
     const result = await pool.query(selectQuery);
@@ -612,8 +766,16 @@ async function deleteJadwal(req, res) {
 
 async function detak(req,res){
 
+const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.user;
 
-res.render('views/detak',{ currentPath: '/detak' });
+  if (!req.session.user) {
+    res.redirect('/login');
+  }else{
+res.render('views/detak',{ currentPath: '/detak' ,session:userData});
+
+  }
+
 
 
 }
@@ -622,8 +784,15 @@ res.render('views/detak',{ currentPath: '/detak' });
 
 async function nafas(req,res){
 
+const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.user;
 
-res.render('views/nafas',{ currentPath: '/nafas' });
+  if (!req.session.user) {
+    res.redirect('/login');
+  }else{
+res.render('views/nafas',{ currentPath: '/nafas' ,session:userData});
+
+  }
 
 
 }
@@ -632,7 +801,15 @@ res.render('views/nafas',{ currentPath: '/nafas' });
 async function suhu(req,res){
 
 
-res.render('views/suhu',{ currentPath: '/suhu' });
+const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.user;
+
+  if (!req.session.user) {
+    res.redirect('/login');
+  }else{
+res.render('views/suhu',{ currentPath: '/suhu' ,session:userData});
+
+  }
 
 
 }
@@ -641,7 +818,16 @@ res.render('views/suhu',{ currentPath: '/suhu' });
 async function akselo(req,res){
 
 
-res.render('views/akselo',{ currentPath: '/akselo' });
+const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.user;
+
+  if (!req.session.user) {
+    res.redirect('/login');
+  }else{
+res.render('views/akselo',{ currentPath: '/akselo' ,session:userData});
+
+  }
+
 
 
 }
@@ -649,7 +835,15 @@ res.render('views/akselo',{ currentPath: '/akselo' });
 async function jadwal(req,res){
 
 
-res.render('views/jadwal',{ currentPath: '/jadwal' });
+const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.user;
+
+  if (!req.session.user) {
+    res.redirect('/login');
+  }else{
+res.render('views/jadwal',{ currentPath: '/jadwal' ,session:userData});
+
+  }
 
 
 }
@@ -664,6 +858,12 @@ async function cek(req,res){
 
 
 async function cek_jadwal(req,res){
+
+  var encoded = req.query.encoded;
+
+  var decoded = verify(encoded);
+
+  var id_user = await cari_user_by_kode_alat(decoded.kode_alat);
 
   const currentDate = new Date();
 
@@ -681,7 +881,7 @@ const seconds = currentDate.getSeconds();
 var timenow = `${day}-${month}-${year} ${hours}:${minutes}`;
 
     var array_waktu = [];
-  pool.query("SELECT * FROM jadwal", (err, result) => {
+  pool.query("SELECT * FROM jadwal WHERE id_user ="+id_user, (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -801,5 +1001,10 @@ module.exports = {
   jadwal,
   getJadwalById,
   cek,
-  cek_jadwal
+  cek_jadwal,
+  login,
+  login_form,
+  logout,
+  register,
+  register_form
 };

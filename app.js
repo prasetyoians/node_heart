@@ -10,16 +10,27 @@ const ejs = require('ejs');
 
 
 
-const cors = require('cors');
+const session = require('express-session');
+// const cors = require('cors');
 
-app.use(cors());
+// app.use(cors());
 
+app.use(session({
+  secret: 'yourSecretKey', // Ganti dengan kunci rahasia yang lebih kuat
+  resave: false,
+  saveUninitialized: false,
+  // Jika menggunakan store eksternal (contoh: Redis), tambahkan konfigurasi store di sini
+}));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 
 app.engine('html', require('ejs').renderFile);
@@ -33,11 +44,16 @@ app.set('views', __dirname);
 
 //page
 app.get('/', require("./controller/response").index);
+app.get('/login', require("./controller/response").login);
+app.get('/logout', require("./controller/response").logout);
+app.post('/login_form', require("./controller/response").login_form);
 app.get('/detak', require("./controller/response").detak);
 app.get('/nafas', require("./controller/response").nafas);
 app.get('/suhu', require("./controller/response").suhu);
 app.get('/akselo', require("./controller/response").akselo);
 app.get('/jadwal', require("./controller/response").jadwal);
+app.get('/register', require("./controller/response").register);
+app.post('/register_form', require("./controller/response").register_form);
 
 
 
