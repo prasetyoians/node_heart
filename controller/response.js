@@ -71,17 +71,10 @@ console.log(c);
 }
 
 async function logout(req,res){
-    
-     req.session.destroy((err) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    } else {
-    res.redirect('/login');
-      
-    }
-  });
+     req.session = null;
 
+  // Redirect atau lakukan tindakan lain sesuai kebutuhan
+  res.redirect('/login');
 }
 
 
@@ -861,7 +854,7 @@ async function cek_jadwal(req,res){
 
   var encoded = req.query.encoded;
 
-  var decoded = verify(encoded);
+  var decoded = verifyToken(encoded);
 
   var id_user = await cari_user_by_kode_alat(decoded.kode_alat);
 

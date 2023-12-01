@@ -10,15 +10,15 @@ const ejs = require('ejs');
 
 
 
-const session = require('express-session');
+const session = require('cookie-session');
 // const cors = require('cors');
 
 // app.use(cors());
 
 app.use(session({
-  secret: 'yourSecretKey', // Ganti dengan kunci rahasia yang lebih kuat
-  resave: false,
-  saveUninitialized: false,
+  name: 'session',
+    keys: ['yourSecretKey'],
+    maxAge: 24 * 60 * 60 * 1000, 
   // Jika menggunakan store eksternal (contoh: Redis), tambahkan konfigurasi store di sini
 }));
 
