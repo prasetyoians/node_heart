@@ -231,7 +231,7 @@ let id_user = req.session.user.id_user;
 async function suhuNew(req,res){
 let id_user = req.session.user.id_user;
 
-  pool.query('SELECT suhu FROM heart WHERE id_user'+id_user+' order by id DESC LIMIT 1', (err, result) => {
+  pool.query('SELECT suhu FROM heart WHERE id_user='+id_user+' order by id DESC LIMIT 1', (err, result) => {
   if (err) {
     console.error(err);
     return;
