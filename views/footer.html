@@ -1658,9 +1658,14 @@ function update_tgl(){
 
     function getAllJadwal(dari,sampai) {
 
+
+// Format tanggal dengan angka 0 di depan jika kurang dari 10
+const formattedDay2 = day < 10 ? `0${day}` : day;
+
+
        if(dari == 0 || sampai == 0){
-            dari = `${year}-${month}-${day}T00:00`;
-            sampai = `${year}-${month}-${day}T23:59`;
+            dari = `${year}-${month}-${formattedDay2}T00:00`;
+            sampai = `${year}-${month}-${formattedDay2}T23:59`;
           }
 
       $.ajax({
