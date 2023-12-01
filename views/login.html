@@ -74,6 +74,9 @@
   <script src="../../js/template.js"></script>
   <script src="../../js/settings.js"></script>
   <script src="../../js/todolist.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
   <!-- endinject -->
 </body>
 
@@ -107,10 +110,21 @@
 
           if(json.status == 1){
 
-      console.log("Login Berhasil!");
-          window.location.href = '/';
+             Swal.fire({
+                    title: "Berhasil!",
+                    text: "Registrasi Akun Berhasil!",
+                    icon: "success"
+                  });
+              setTimeout(function() {
+                  window.location.href = '/';
+
+              }, 2000);
         }else{
-          alert("Username Tidak Ditemukan")
+           Swal.fire({
+            title: "Gagal!",
+            text: "Username/Password Salah. Silahkan Ulangi!",
+            icon: "error"
+          });
         }
       
       

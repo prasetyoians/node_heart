@@ -79,7 +79,7 @@ async function logout(req,res){
 
 
 async function register(req,res){
-  pool.query('SELECT * FROM alat ', (err, result) => {
+  pool.query('SELECT a.* FROM alat as a  LEFT JOIN users as b on a.id_alat = b.id_alat WHERE b.id_alat IS NULL', (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -95,6 +95,17 @@ res.render('views/register',{
 
 }
 
+async function cek_user_ada(username){
+ return new Promise((resolve, reject) => {
+  pool.query("SELECT count(*) as counts FROM users WHERE nama='"+username+"' ", (err, result) => {
+ 
+  const hasil = result.rows[0].counts;
+   resolve(hasil);
+
+    });
+  });
+}
+
 async function register_form(req,res){
  const username = req.body.username;
   const password = req.body.password;
@@ -103,6 +114,10 @@ async function register_form(req,res){
   const hari = req.body.hari;
   const id_alat = req.body.id_alat;
 
+const c = await cek_user_ada(username);
+console.log(c);
+
+if (c == 0 ) {
 
 
 const insertQuery = 'INSERT INTO users(username, password,nama,bulan,hari,id_alat) VALUES($1,$2,$3,$4,$5,$6) RETURNING *';
@@ -119,6 +134,10 @@ const insertQuery = 'INSERT INTO users(username, password,nama,bulan,hari,id_ala
   }
   // pool.end();
 
+}else{
+    res.status(200).json({pesan:"USERNAME SUDAH ADA",status:2});
+
+}
 
   }
 
