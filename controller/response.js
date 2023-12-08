@@ -20,8 +20,10 @@ function count_user_pass(username,password){
   var arr_hasil = [];
   return new Promise((resolve, reject) => {
   pool.query("SELECT count(*) as counts FROM users WHERE username='"+username+"' AND  password ='"+password+"' ", (err, result) => {
- 
+  console.log( result);
+
   const hasil = result.rows[0].counts;
+
    resolve(hasil);
 
     });
@@ -898,6 +900,7 @@ var timenow = `${day}-${month}-${year} ${hours}:${minutes}`;
     console.error(err);
     return;
   }
+
   const data = result.rows;
 
 
@@ -905,6 +908,9 @@ var timenow = `${day}-${month}-${year} ${hours}:${minutes}`;
     var waktu = dateFormatToData(data[i].waktu_alarm);
     var statusnya = data[i].status;
     var judul = data[i].judul_kegiatan;
+
+    console.log("waktu="+waktu);
+    console.log("timenow="+timenow);
 
     if(waktu == timenow && statusnya == 0){
        var json_response = "1";
@@ -921,7 +927,7 @@ var timenow = `${day}-${month}-${year} ${hours}:${minutes}`;
 
     // console.log(array_waktu);
 
-  res.status(200).json([{json_response:json_response,judul:judul}]);
+  res.status(200).json([{json_response:json_response,judul:judul,waktu:waktu,timenow:timenow}]);
 
 
 });
