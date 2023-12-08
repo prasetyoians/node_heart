@@ -879,17 +879,15 @@ async function cek_jadwal(req,res){
 
   var id_user = await cari_user_by_kode_alat(decoded.kode_alat);
 
-  const currentDate = new Date();
+  const date = new Date();
 
 // Mendapatkan tanggal
-const day = currentDate.getDate();
-const month = currentDate.getMonth() + 1; // Perlu ditambah 1 karena indeks bulan dimulai dari 0
-const year = currentDate.getFullYear();
-
-// Mendapatkan waktu
-const hours = currentDate.getHours();
-const minutes = currentDate.getMinutes();
-const seconds = currentDate.getSeconds();
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = String(date.getFullYear());
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
 
 
 var timenow = `${day}-${month}-${year} ${hours}:${minutes}`;
