@@ -893,7 +893,7 @@ async function cek_jadwal(req,res){
 var timenow = `${day}-${month}-${year} ${hours}:${minutes}`;
 
     var array_waktu = [];
-  pool.query("SELECT * FROM jadwal WHERE id_user ="+id_user, (err, result) => {
+  pool.query("SELECT * FROM jadwal WHERE id_user ="+id_user+" and status=0", (err, result) => {
   if (err) {
     console.error(err);
     return;
