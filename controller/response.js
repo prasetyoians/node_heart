@@ -925,7 +925,7 @@ var timenow = `${day}-${month}-${year} ${hours}:${minutes}`;
 
     // console.log(array_waktu);
 
-  res.status(200).json([{json_response:json_response,judul:judul}]);
+  res.status(200).json([{json_response:json_response,judul:judul,waktu:waktu,timenow:timenow}]);
 
 
 });
