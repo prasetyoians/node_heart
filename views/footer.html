@@ -1,0 +1,971 @@
+<!--   Core JS Files   -->
+  <script src="../assets/js/core/jquery.3.2.1.min.js"></script>
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
+
+  <!-- jQuery UI -->
+  <script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+  <script src="../assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+
+  <!-- jQuery Scrollbar -->
+  <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+
+  <!-- Chart JS -->
+  <script src="../assets/js/plugin/chart.js/chart.min.js"></script>
+
+  <!-- jQuery Sparkline -->
+  <script src="../assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+  <!-- Chart Circle -->
+  <script src="../assets/js/plugin/chart-circle/circles.min.js"></script>
+
+  <!-- Datatables -->
+  <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+
+  <!-- Bootstrap Notify -->
+  <script src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+  <!-- jQuery Vector Maps -->
+  <script src="../assets/js/plugin/jqvmap/jquery.vmap.min.js"></script>
+  <script src="../assets/js/plugin/jqvmap/maps/jquery.vmap.world.js"></script>
+
+  <!-- Sweet Alert -->
+  <script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+  <!-- Atlantis JS -->
+  <script src="../assets/js/atlantis.min.js"></script>
+
+  <!-- Atlantis DEMO methods, don't include it in your project! -->
+<!--   <script src="../assets/js/setting-demo.js"></script>
+  <script src="../assets/js/demo.js"></script> -->
+  <script>
+
+//eksekusi document ready ketika page direload
+    $('document').ready(function(){
+    refresh_by_filter(0,0,0)
+   $("#start_over").hide();
+
+   var page = $("#page").val();
+   if (page == "dashboard") {
+    $("#li_dashboard").addClass("active");
+    $("#li_profil").removeClass("active");
+    $("#li_olahraga").removeClass("active");
+    $("#li_bantuan").removeClass("active");
+
+   }else if (page == "profil") {
+    $("#li_dashboard").removeClass("active");
+    $("#li_profil").addClass("active");
+    $("#li_olahraga").removeClass("active");
+    $("#li_bantuan").removeClass("active");
+
+   }else if (page == "mulai_olahraga") {
+    $("#li_dashboard").removeClass("active");
+    $("#li_profil").removeClass("active");
+    $("#li_olahraga").addClass("active");
+    $("#li_bantuan").removeClass("active");
+
+   }else if (page == "riwayat_olahraga") {
+    $("#li_dashboard").removeClass("active");
+    $("#li_profil").removeClass("active");
+    $("#li_olahraga").addClass("active");
+    $("#li_bantuan").removeClass("active");
+
+   }else if (page == "bantuan") {
+    $("#li_dashboard").removeClass("active");
+    $("#li_profil").removeClass("active");
+    $("#li_olahraga").removeClass("active");
+    $("#li_bantuan").addClass("active");
+   }
+
+    });
+    //var filter
+    var dari = $("#dari").val();
+    var sampai = $("#sampai").val();
+    var id_jenis_olahraga = $("#id_jenis_olahraga option:selected").val();
+
+    //pengaturan waktu
+ const currentDate = new Date();
+
+const year = currentDate.getFullYear();
+const month = (currentDate.getMonth() + 1); // Note that months are 0-based (January is 0)
+const day = currentDate.getDate();
+const hours = currentDate.getHours();
+const minutes = currentDate.getMinutes();
+const seconds = currentDate.getSeconds();
+
+
+
+//refresh all by filter
+function refresh_by_filter(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+    show_grafik_detak_oxy(dari,sampai,id_jenis_olahraga);
+    show_grafik_suhu(dari,sampai,id_jenis_olahraga);
+    show_bar_atas(dari,sampai,id_jenis_olahraga);
+    total_olahraga(dari,sampai,id_jenis_olahraga);
+    show_table_index(dari,sampai,id_jenis_olahraga);
+    table_riwayat_olahraga(dari,sampai,id_jenis_olahraga);
+}
+
+
+//Detak jantung dan tingkat oksigen
+
+  var htmlLegendsChart = document.getElementById('htmlLegendsChart').getContext('2d');
+
+  var gradientStroke2 = htmlLegendsChart.createLinearGradient(500, 0, 100, 0);
+      gradientStroke2.addColorStop(0, '#177dff');
+      gradientStroke2.addColorStop(1, '#80b6f4');
+
+  var gradientFill2 = htmlLegendsChart.createLinearGradient(500, 0, 100, 0);
+      gradientFill2.addColorStop(0, "rgba(23, 125, 255, 0.7)");
+      gradientFill2.addColorStop(1, "rgba(128, 182, 244, 0.3)");
+
+  var gradientStroke = htmlLegendsChart.createLinearGradient(500, 0, 100, 0);
+      gradientStroke.addColorStop(0, '#f3545d');
+      gradientStroke.addColorStop(1, '#ff8990');
+
+  var gradientFill = htmlLegendsChart.createLinearGradient(500, 0, 100, 0);
+      gradientFill.addColorStop(0, "rgba(243, 84, 93, 0.7)");
+      gradientFill.addColorStop(1, "rgba(255, 137, 144, 0.3)");
+
+
+  function show_grafik_detak_oxy(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    $.ajax({
+          url:"/show_grafik_detak_oxy_suhu?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+                  var array_hr = [];
+                  var array_oxy = [];
+                  var array_suhu = [];
+                  var array_time = [];
+
+                   var jml_detak = 0;
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_hr.push(data[i].hr);
+                  array_oxy.push(data[i].spo2);
+                  array_suhu.push(data[i].suhu);
+                  array_time.push(formatTime(data[i].timestamp)+" - "+data[i].nama_olahraga);
+
+
+                  }
+                 var myHtmlLegendsChart = new Chart(htmlLegendsChart, {
+                      type: 'line',
+                      data: {
+                        labels: array_time,
+                        datasets: [ {
+                          label: "Detak Jantung",
+                          borderColor: gradientStroke,
+                          pointBackgroundColor: gradientStroke,
+                         pointBorderWidth: 2,
+                          pointHoverRadius: 4,
+                          pointHoverBorderWidth: 1,
+                          pointRadius: 4,
+                          backgroundColor: gradientFill,
+                          legendColor: '#ff8990',
+                          fill: true,
+                          borderWidth: 1,
+                          data: array_hr
+                        }, {
+                          label: ["Tingkat Oksigen"],
+                          borderColor: gradientStroke2,
+                          pointBackgroundColor: gradientStroke2,
+                         pointBorderWidth: 2,
+                          pointHoverRadius: 4,
+                          pointHoverBorderWidth: 1,
+                          pointRadius: 4,
+                          backgroundColor: gradientFill2,
+                          legendColor: '#177dff',
+                          fill: true,
+                          borderWidth: 1,
+                          data: array_oxy
+                        },]
+                      },
+                      options : {
+                        responsive: true, 
+                        maintainAspectRatio: false,
+                        legend: {
+                          display: false
+                        },
+                        tooltips: {
+                          bodySpacing: 4,
+                          mode:"nearest",
+                          intersect: 0,
+                          position:"nearest",
+                          xPadding:10,
+                          yPadding:10,
+                          caretPadding:10
+                        },
+                        layout:{
+                          padding:{left:15,right:15,top:15,bottom:15}
+                        },
+                        scales: {
+                          yAxes: [{
+                            ticks: {
+                              fontColor: "rgba(0,0,0,0.5)",
+                              fontStyle: "500",
+                              beginAtZero: false,
+                              maxTicksLimit: 5,
+                              padding: 20
+                            },
+                            gridLines: {
+                              drawTicks: false,
+                              display: false
+                            }
+                          }],
+                          xAxes: [{
+                            gridLines: {
+                              zeroLineColor: "transparent"
+                            },
+                            ticks: {
+                              padding: 20,
+                              fontColor: "rgba(0,0,0,0.5)",
+                              fontStyle: "500",
+                              callback: function(value) {
+                                  return value.substr(0, 5);//truncate
+                              },
+                            }
+                          }]
+                        }, 
+
+                        legendCallback: function(chart) { 
+                          var text = []; 
+                          text.push('<ul class="' + chart.id + '-legend html-legend">'); 
+                          for (var i = 0; i < chart.data.datasets.length; i++) { 
+                            text.push('<li><span style="background-color:' + chart.data.datasets[i].legendColor + '"></span>'); 
+                            if (chart.data.datasets[i].label) { 
+                              text.push(chart.data.datasets[i].label); 
+                            } 
+                            text.push('</li>'); 
+                          } 
+                          text.push('</ul>'); 
+                          return text.join(''); 
+                        }  
+                      }
+                    });
+
+
+                    var myLegendContainer = document.getElementById("myChartLegend");
+
+                    // generate HTML legend
+                    myLegendContainer.innerHTML = myHtmlLegendsChart.generateLegend();
+
+                    // bind onClick event to all LI-tags of the legend
+                    var legendItems = myLegendContainer.getElementsByTagName('li');
+                    for (var i = 0; i < legendItems.length; i += 1) {
+                      legendItems[i].addEventListener("click", legendClickCallback, false);
+                    }
+
+          }
+    })
+
+
+  }
+
+
+  function show_grafik_suhu(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+                
+
+    $.ajax({
+          url:"/show_grafik_detak_oxy_suhu?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_suhu = [];
+                  var array_time = [];
+
+                   var jml_detak = 0;
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_suhu.push(data[i].suhu);
+                  array_time.push(formatTime(data[i].timestamp)+" - "+data[i].nama_olahraga);
+
+
+
+                  }
+
+
+// suhu tubuh
+    var barChart = document.getElementById('barChart').getContext('2d');
+
+    var myBarChart = new Chart(barChart, {
+      type: 'bar',
+      data: {
+        labels: array_time,
+        datasets : [{
+          label: "Suhu Tubuh",
+          backgroundColor: 'rgb(100, 220, 120)',
+          borderColor: 'rgb(23, 125, 255)',
+          data: array_suhu,
+        }],
+      },
+      options: {
+        responsive: true, 
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true,
+            }
+          }],
+           xAxes: [{
+            ticks: {
+                callback: function(value) {
+                    return value.substr(0, 5);//truncate
+                },
+            }
+        }],
+
+        },
+      }
+    });
+
+
+
+          }
+    })
+
+
+  }
+
+
+//show bar atas
+
+  function show_bar_atas(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+                
+
+    $.ajax({
+          url:"/show_bar_atas?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_heart = [];
+              var array_oxy = [];
+              var array_suhu = [];
+                  var array_time = [];
+
+                   var jml_detak = 0;
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_heart.push(data[i].hr);
+                  array_oxy.push(data[i].spo2);
+                  array_suhu.push(data[i].suhu);
+                  array_time.push(formatTime(data[i].timestamp)+" - "+data[i].nama_olahraga);
+
+
+
+                  }
+                  $("#detak_terakhir").text(array_heart+" BPM");
+                  $("#oxy_terakhir").text(array_oxy+" %");
+                  $("#suhu_terakhir").text(array_suhu+" °C");
+
+
+
+
+          }
+    })
+
+
+  }
+
+
+
+  function total_olahraga(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+                
+
+    $.ajax({
+          url:"/total_olahraga?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_total = [];
+
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_total.push(data[i].total);
+
+
+
+                  }
+                  $("#total_olahraga").text(array_total+"x");
+
+
+
+
+          }
+    })
+
+
+  }
+
+
+function show_table_index(dari,sampai,id_jenis_olahraga){
+
+  if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day} 00:00:00`;
+    sampai = `${year}-${month}-${day} 23:59:59`;
+  }
+
+            $.ajax({  
+                url:"/show_table_index?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                    var a = "";
+
+                    for (var i = 0; i < data.length; i++) {
+                        a += `<tr>`;
+                        a += `<td>`+ parseInt(i+1) +`</td>`;
+                        a += `<td>`+data[i].nama_olahraga+`</td>`;
+                        a += `<td>`+formatDate(data[i].timestamp)+`</td>`;
+                        a += `<td>`+data[i].hr+`BPM</td>`;
+                        a += `<td>`+data[i].spo2+`%</td>`;
+                        a += `<td>`+data[i].suhu+` °C</td>`;
+                        a += `<tr>`;
+                        }
+
+                        $("#datatable_index tbody").html(a);
+
+
+                       //setTimeout(reload, 1000);
+                }
+            })
+}
+
+function add_mulai_olahraga(){
+  var tempat = $("#tempat").val();
+  var id_jenis_olahraga_mulai_olahraga = $("#id_jenis_olahraga_mulai_olahraga").val();
+
+  var data = {
+    tempat:tempat,
+    id_jenis_olahraga_mulai_olahraga:id_jenis_olahraga_mulai_olahraga,
+    status:"Dimulai"
+  }
+  $.ajax({
+    url : "/add_mulai_olahraga",
+    method:"POST",
+    dataType:"JSON",
+    data:data,
+    success:function(response){
+        // swal({
+        //             title: "Berhasil!",
+        //             text: "Mari Mulai Olahraga Kamu!",
+        //             icon: "success"
+        //           });
+
+        $("#start_over").show(1000);
+        $("#block_upper").hide(1000);
+        $("#id_mulai_olahraga_hidden").val(response.id_mulai_olahraga);
+        console.log(response);
+        setInterval(function() {
+      detak_oxy_suhu_mulai_olahraga(response.id_mulai_olahraga);
+      detak_oxy_suhu_mulai_olahraga_now(response.id_mulai_olahraga);
+      table_mulai_olahraga(response.id_mulai_olahraga);
+       }, 2000)
+       
+    }
+  });
+}
+
+
+
+function stop_olahraga(id_mulai_olahraga){
+  
+
+  
+  $.ajax({
+    url : "/stop_olahraga?id_mulai_olahraga="+id_mulai_olahraga,
+    method:"GET",
+    dataType:"JSON",
+    success:function(response){
+        // swal({
+        //             title: "Berhasil!",
+        //             text: "Mari Mulai Olahraga Kamu!",
+        //             icon: "success"
+        //           });
+
+         swal({
+                    title: "Berhasil!",
+                    text: "Olahraga telah dihentikan. Kamu bisa mengecek riwayat olahraga di halaman berikut ini",
+                    icon: "success"
+                  });
+              setTimeout(function() {
+                  window.location.href = '/riwayat_olahraga';
+
+              }, 2000);
+       
+    }
+  });
+}
+
+   
+//detak mulai olahraga
+
+function detak_oxy_suhu_mulai_olahraga_now(id_mulai_olahraga){
+
+
+    $.ajax({
+          url:"/detak_oxy_suhu_mulai_olahraga_now?&id_mulai_olahraga="+id_mulai_olahraga,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_heart = [];
+              var array_oxy = [];
+              var array_suhu = [];
+                  var array_time = [];
+
+                   var jml_detak = 0;
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_heart.push(data[i].hr);
+                  array_oxy.push(data[i].spo2);
+                  array_suhu.push(data[i].suhu);
+                  array_time.push(formatTime(data[i].timestamp)+" - "+data[i].nama_olahraga);
+
+
+
+                  }
+
+            $("#detak_mulai_olahraga_now").text(array_heart+" BPM");
+            $("#oksigen_mulai_olahraga_now").text(array_oxy+" %");
+            $("#suhu_mulai_olahraga_now").text(array_suhu+" °C");
+          }
+        });
+}
+  function detak_oxy_suhu_mulai_olahraga(id_mulai_olahraga){
+
+
+    $.ajax({
+          url:"/detak_oxy_suhu_mulai_olahraga?&id_mulai_olahraga="+id_mulai_olahraga,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+
+              var array_heart = [];
+              var array_oxy = [];
+              var array_suhu = [];
+                  var array_time = [];
+
+                   var jml_detak = 0;
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_heart.push(data[i].hr);
+                  array_oxy.push(data[i].spo2);
+                  array_suhu.push(data[i].suhu);
+                  array_time.push(formatTime(data[i].timestamp)+" - "+data[i].nama_olahraga);
+
+
+
+                  }
+
+
+
+// detak mulai olahraga
+    var detak_mulai_olahraga = document.getElementById('detak_mulai_olahraga').getContext('2d');
+
+    var detak_mulai_olahraga_chart = new Chart(detak_mulai_olahraga, {
+      type: 'line',
+      data: {
+        labels: array_time,
+        datasets : [{
+          label: "Detak Jantung",
+          borderColor: 'rgb(220, 100, 100)',
+          data: array_heart,
+        }],
+      },
+      options: {
+        responsive: true, 
+        maintainAspectRatio: false,
+        animation: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true,
+            }
+          }],
+           xAxes: [{
+            ticks: {
+                callback: function(value) {
+                    return value.substr(0, 5);//truncate
+                },
+            }
+        }],
+
+        },
+      }
+    });
+
+
+
+// tingkat oksigen mulai olahraga
+    var oksigen_mulai_olahraga = document.getElementById('oksigen_mulai_olahraga').getContext('2d');
+
+    var oksigen_mulai_olahraga_chart = new Chart(oksigen_mulai_olahraga, {
+      type: 'line',
+      data: {
+        labels: array_time,
+        datasets : [{
+          label: "Tingkat Oksigen",
+          borderColor: 'rgb(100, 100, 230)',
+          data: array_oxy,
+        }],
+      },
+      options: {
+        responsive: true, 
+        animation: false,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true,
+            }
+          }],
+           xAxes: [{
+            ticks: {
+                callback: function(value) {
+                    return value.substr(0, 5);//truncate
+                },
+            }
+        }],
+
+        },
+      }
+    });
+
+
+
+// suhu mulai olahraga
+    var suhu_mulai_olahraga = document.getElementById('suhu_mulai_olahraga').getContext('2d');
+
+    var suhu_mulai_olahraga_chart = new Chart(suhu_mulai_olahraga, {
+      type: 'bar',
+      data: {
+        labels: array_time,
+        datasets : [{
+          label: "Suhu Tubuh",
+          borderColor: 'rgb(100, 230, 100)',
+          backgroundColor: 'rgb(100, 230, 100)',
+          data: array_suhu,
+        }],
+      },
+      options: {
+        responsive: true, 
+        animation: false,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true,
+            }
+          }],
+           xAxes: [{
+            ticks: {
+                callback: function(value) {
+                    return value.substr(0, 5);//truncate
+                },
+            }
+        }],
+
+        },
+      }
+    });
+
+
+
+
+          }
+    });
+
+
+
+
+
+
+  }
+
+
+
+
+
+function table_mulai_olahraga(id_mulai_olahraga){
+
+ 
+
+            $.ajax({  
+                url:"/table_mulai_olahraga?&id_mulai_olahraga="+id_mulai_olahraga,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                    var a = "";
+
+                    for (var i = 0; i < data.length; i++) {
+                        a += `<tr>`;
+                        a += `<td>`+ parseInt(i+1) +`</td>`;
+                        a += `<td>`+data[i].nama_olahraga+`</td>`;
+                        a += `<td>`+formatDate(data[i].timestamp)+`</td>`;
+                        a += `<td>`+data[i].hr+`BPM</td>`;
+                        a += `<td>`+data[i].spo2+`%</td>`;
+                        a += `<td>`+data[i].suhu+` °C</td>`;
+                        a += `<tr>`;
+                        }
+
+                        $("#table_mulai_olahraga tbody").html(a);
+
+
+                       //setTimeout(reload, 1000);
+                }
+            })
+}
+
+
+
+function table_riwayat_olahraga(dari,sampai,id_jenis_olahraga){
+
+ 
+
+            $.ajax({  
+                url:"/table_riwayat_olahraga?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                    var a = "";
+
+                    for (var i = 0; i < data.length; i++) {
+                        a += `<tr>`;
+                        a += `<td><button class="btn btn-round  btn-info" onclick="show_modal_riwayat_olahraga(`+data[i].id_mulai_olahraga+`)"><i class="fa fa-info-circle"></i></button></td>`;
+                        a += `<td>`+data[i].nama_olahraga+`</td>`;
+                        a += `<td>`+formatDate(data[i].timestamp)+`</td>`;
+                        a += `<td>`+data[i].tempat+`</td>`;
+
+                        a += `<tr>`;
+                        }
+
+                        $("#table_riwayat_olahraga tbody").html(a);
+
+
+                       //setTimeout(reload, 1000);
+                }
+            })
+}
+
+
+function show_modal_riwayat_olahraga(id_mulai_olahraga){
+
+ $.ajax({
+          url:"/detak_oxy_suhu_mulai_olahraga?&id_mulai_olahraga="+id_mulai_olahraga,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+  $("#modal_riwayat_olahraga").show(1000);
+
+              var array_heart = [];
+              var array_oxy = [];
+              var array_suhu = [];
+                  var array_time = [];
+
+                   var jml_detak = 0;
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_heart.push(data[i].hr);
+                  array_oxy.push(data[i].spo2);
+                  array_suhu.push(data[i].suhu);
+                  array_time.push(formatTime(data[i].timestamp)+" - "+data[i].nama_olahraga);
+
+
+
+                  }
+
+
+// detak mulai olahraga
+    var detak_riwayat_olahraga = document.getElementById('detak_riwayat_olahraga').getContext('2d');
+
+    var detak_riwayat_olahraga = new Chart(detak_riwayat_olahraga, {
+      type: 'line',
+      data: {
+        labels: array_time,
+        datasets : [{
+          label: "Detak Jantung",
+          borderColor: 'rgb(220, 100, 100)',
+          data: array_heart,
+        }],
+      },
+      options: {
+        responsive: true, 
+        maintainAspectRatio: false,
+        animation: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true,
+            }
+          }],
+           xAxes: [{
+            ticks: {
+                callback: function(value) {
+                    return value.substr(0, 5);//truncate
+                },
+            }
+        }],
+
+        },
+      }
+    });
+
+
+
+// tingkat oksigen mulai olahraga
+    var oksigen_riwayat_olahraga = document.getElementById('oksigen_riwayat_olahraga').getContext('2d');
+
+    var oksigen_riwayat_olahraga = new Chart(oksigen_riwayat_olahraga, {
+      type: 'line',
+      data: {
+        labels: array_time,
+        datasets : [{
+          label: "Tingkat Oksigen",
+          borderColor: 'rgb(100, 100, 230)',
+          data: array_oxy,
+        }],
+      },
+      options: {
+        responsive: true, 
+        animation: false,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true,
+            }
+          }],
+           xAxes: [{
+            ticks: {
+                callback: function(value) {
+                    return value.substr(0, 5);//truncate
+                },
+            }
+        }],
+
+        },
+      }
+    });
+
+
+
+// suhu mulai olahraga
+    var suhu_riwayat_olahraga = document.getElementById('suhu_riwayat_olahraga').getContext('2d');
+
+    var suhu_riwayat_olahraga = new Chart(suhu_riwayat_olahraga, {
+      type: 'bar',
+      data: {
+        labels: array_time,
+        datasets : [{
+          label: "Suhu Tubuh",
+          borderColor: 'rgb(100, 230, 100)',
+          backgroundColor: 'rgb(100, 230, 100)',
+          data: array_suhu,
+        }],
+      },
+      options: {
+        responsive: true, 
+        animation: false,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero:true,
+            }
+          }],
+           xAxes: [{
+            ticks: {
+                callback: function(value) {
+                    return value.substr(0, 5);//truncate
+                },
+            }
+        }],
+
+        },
+      }
+    });
+
+
+    detak_riwayat_olahraga.update();
+    oksigen_riwayat_olahraga.update();
+    suhu_riwayat_olahraga.update();
+
+  }
+});
+
+
+}
+
+
+function close_modal(){
+  $("#modal_riwayat_olahraga").hide(1000);
+  $("#jantung_nav").removeClass("active show");
+  $("#oksigen_nav").removeClass("active show");
+  $("#suhu_nav").removeClass("active show");
+
+  $("#jantung_tab").removeClass("active show");
+  $("#oksigen_tab").removeClass("active show");
+  $("#suhu_tab").removeClass("active show");
+
+}
+//fungsi format time
+function formatTime(inputDate) {
+  const date = new Date(inputDate);
+  
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${hours}:${minutes}`;
+}
+
+
+function formatDate(inputDate) {
+  const date = new Date(inputDate);
+  
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = String(date.getFullYear()).substring(2);
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+}
+
+
+
+  </script>
+</body>
+</html>

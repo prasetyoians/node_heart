@@ -1,0 +1,243 @@
+<%- include('header.html') %>
+						
+		<div class="main-panel">
+			<div class="content">
+				<div class="panel-header bg-primary-gradient">
+					<div class="page-inner py-5">
+						<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+							<div>
+								<h2 class="text-white pb-2 fw-bold">Mulai Olahraga</h2>
+								<input type="hidden" id="page" value="mulai_olahraga">
+
+								<h5 class="text-white op-7 mb-2">Hai <%=session.username %>! Mari mulai olahraga untuk pantau kesehatan kamu!</h5>
+							</div>
+							<div class="ml-md-auto py-2 py-md-0">
+								
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="page-inner mt--5">
+
+					<div id="block_upper">
+						<div class="col-md-12">
+							<div class="card full-height">
+								<div class="card-body">
+									<div class="card-title">Mari Memulai Olahraga <i class="fa fa-plus-circle text-success"></i>
+										<div class="form">
+											<div class="row">
+												<div class="col-md-6">
+													<label>Tempat:</label>
+													<input type="text" name="tempat" id="tempat" class="form-control">
+												</div>
+												<div class="col-md-6">
+													<label>Jenis Olahraga:</label>
+													<select class="form-control" id="id_jenis_olahraga_mulai_olahraga" name="id_jenis_olahraga_mulai_olahraga">
+														<option value="1">Jogging</option>
+														<option value="2">Bersepeda</option>
+														<option value="3">Streching</option>
+													</select>
+												</div>
+												
+											</div>
+
+											<div class="col-md-12 m-2">
+													<button class="btn btn-success" onclick="add_mulai_olahraga()" style="width: 100%"><i class="fas fa-walking" id="btn_mulai"></i> MULAI!</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<input type="hidden" name="id_mulai_olahraga_hidden" id="id_mulai_olahraga_hidden">
+					<div id="start_over">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="card">
+									<button class="btn btn-danger m-2" id="btn_stop" onclick="stop_olahraga($('#id_mulai_olahraga_hidden').val())"><i class="fa fa-minus-circle"></i> STOP</button>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="card">
+									<div class="card-header">
+										<div class="card-title" style="text-align: center">Detak Jantung:
+											<h2 class="p-2 bg-danger text-white" id="detak_mulai_olahraga_now" style="text-align: center;border-radius: 10px;"></h2>
+										 </div>
+									</div>
+									<div class="card-body">
+										
+										<div class="chart-container">
+											<canvas id="detak_mulai_olahraga"></canvas>
+										</div>
+										<!-- <div id="myChartLegend"></div> -->
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="card">
+									<div class="card-header">
+									<div class="card-title" style="text-align: center">Tingkat Oksigen:
+											<h2 class="p-2 bg-primary text-white" id="oksigen_mulai_olahraga_now" style="text-align: center;border-radius: 10px;"></h2>
+										 </div>
+									</div>
+									<div class="card-body">
+										
+										<div class="chart-container">
+											<canvas id="oksigen_mulai_olahraga"></canvas>
+										</div>
+										<!-- <div id="myChartLegend"></div> -->
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<div class="card">
+									<div class="card-header">
+										<div class="card-title" style="text-align: center">Suhu Tubuh:
+											<h2 class="p-2 bg-success text-white" id="suhu_mulai_olahraga_now" style="text-align: center;border-radius: 10px;"></h2>
+										 </div>
+									</div>
+									<div class="card-body">
+										
+										<div class="chart-container">
+											<canvas id="suhu_mulai_olahraga"></canvas>
+										</div>
+										<!-- <div id="myChartLegend"></div> -->
+									</div>
+								</div>
+							</div>
+							
+						</div>
+						<div class="row row-card-no-pd">
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header bg-warning-gradient text-white" >
+										<h4 class="card-title text-white" style="margin: 5px;margin-top: 10px;text-align: center;">Keseluruhan Data</h4>
+									</div>
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="datatable table table-stripped table-borderd" id="table_mulai_olahraga">
+												<thead>
+													<TR>
+														<th>No.</th>
+														<th>Jenis Olahraga</th>
+														<th>Waktu</th>
+														<th>Detak Jantung</th>
+														<th>Tingkat Oksigen</th>
+														<th>Suhu Tubuh</th>
+													</TR>
+												</thead>
+												<tbody>
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer class="footer">
+				<div class="container-fluid">
+					<nav class="pull-left">
+						<ul class="nav">
+							<li class="nav-item">
+								<a class="nav-link" href="https://www.themekita.com">
+									HeartSport
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									Petunjuk Penggunaan Alat
+								</a>
+							</li>
+							
+						</ul>
+					</nav>
+					<div class="copyright ml-auto">
+						2024, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.themekita.com">Ian Putra</a>
+					</div>				
+				</div>
+			</footer>
+		</div>
+		
+		<!-- Custom template | don't include it in your project! -->
+		<div class="custom-template">
+			<div class="title">Settings</div>
+			<div class="custom-content">
+				<div class="switcher">
+					<div class="switch-block">
+						<h4>Logo Header</h4>
+						<div class="btnSwitch">
+							<button type="button" class="changeLogoHeaderColor" data-color="dark"></button>
+							<button type="button" class="selected changeLogoHeaderColor" data-color="blue"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="green"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="red"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="white"></button>
+							<br/>
+							<button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
+						</div>
+					</div>
+					<div class="switch-block">
+						<h4>Navbar Header</h4>
+						<div class="btnSwitch">
+							<button type="button" class="changeTopBarColor" data-color="dark"></button>
+							<button type="button" class="changeTopBarColor" data-color="blue"></button>
+							<button type="button" class="changeTopBarColor" data-color="purple"></button>
+							<button type="button" class="changeTopBarColor" data-color="light-blue"></button>
+							<button type="button" class="changeTopBarColor" data-color="green"></button>
+							<button type="button" class="changeTopBarColor" data-color="orange"></button>
+							<button type="button" class="changeTopBarColor" data-color="red"></button>
+							<button type="button" class="changeTopBarColor" data-color="white"></button>
+							<br/>
+							<button type="button" class="changeTopBarColor" data-color="dark2"></button>
+							<button type="button" class="selected changeTopBarColor" data-color="blue2"></button>
+							<button type="button" class="changeTopBarColor" data-color="purple2"></button>
+							<button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
+							<button type="button" class="changeTopBarColor" data-color="green2"></button>
+							<button type="button" class="changeTopBarColor" data-color="orange2"></button>
+							<button type="button" class="changeTopBarColor" data-color="red2"></button>
+						</div>
+					</div>
+					<div class="switch-block">
+						<h4>Sidebar</h4>
+						<div class="btnSwitch">
+							<button type="button" class="selected changeSideBarColor" data-color="white"></button>
+							<button type="button" class="changeSideBarColor" data-color="dark"></button>
+							<button type="button" class="changeSideBarColor" data-color="dark2"></button>
+						</div>
+					</div>
+					<div class="switch-block">
+						<h4>Background</h4>
+						<div class="btnSwitch">
+							<button type="button" class="changeBackgroundColor" data-color="bg2"></button>
+							<button type="button" class="changeBackgroundColor selected" data-color="bg1"></button>
+							<button type="button" class="changeBackgroundColor" data-color="bg3"></button>
+							<button type="button" class="changeBackgroundColor" data-color="dark"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="custom-toggle">
+				<i class="flaticon-settings"></i>
+			</div> -->
+		</div>
+		<!-- End Custom template -->
+
+            <%- include('footer.html') %>
+

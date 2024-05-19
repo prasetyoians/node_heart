@@ -1,0 +1,167 @@
+<%- include('header.html') %>
+						
+		<div class="main-panel">
+			<div class="content">
+				<div class="panel-header bg-primary-gradient">
+					<div class="page-inner py-5">
+						<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+							<div>
+								<h2 class="text-white pb-2 fw-bold">Riwayat Olahraga</h2>
+								<input type="hidden" id="page" value="riwayat_olahraga">
+
+								<h5 class="text-white op-7 mb-2">Ini adalah Riwayat Olahraga kamu yang telah terecord oleh sistem</h5>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+				<div class="page-inner mt--5">
+					<div class="col-md-12">
+						<div class="card full-height">
+							<div class="card-body">
+								<div class="card-title">Filter <i class="fa fa-filter"></i>
+									<div class="form">
+										<div class="row">
+											<div class="col-md-4">
+												<label>Dari:</label>
+												<input type="datetime-local" name="dari" id="dari" class="form-control">
+											</div>
+											<div class="col-md-4">
+												<label>Sampai:</label>
+												<input type="datetime-local" name="sampai" id="sampai" class="form-control">
+											</div>
+											<div class="col-md-3">
+												<label>Jenis Olahraga:</label>
+												<select class="form-control" id="id_jenis_olahraga" name="id_jenis_olahraga">
+													<option value="0">Semua Olahraga</option>
+													<option value="1">Jogging</option>
+													<option value="2">Bersepeda</option>
+													<option value="3">Streching</option>
+												</select>
+											</div>
+											<div class="col-1">
+												<label>&nbsp</label>
+												<button class="btn btn-success" onclick="refresh_by_filter($('#dari').val(),$('#sampai').val(),$('#id_jenis_olahraga option:selected').val())"><i class="fa fa-search"></i></button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row row-card-no-pd">
+						<div class="col-md-12">
+							<div class="card">
+								<div class="card-header bg-warning-gradient text-white" >
+									<h4 class="card-title text-white" style="margin: 5px;margin-top: 10px;text-align: center;">Riwayat Olahraga Kamu</h4>
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="datatable table table-stripped table-borderd" id="table_riwayat_olahraga">
+											<thead>
+												<TR>
+													<th>Info Detail</th>
+													<th>Jenis Olahraga</th>
+													<th>Waktu</th>
+													<th>Tempat</th>
+												</TR>
+											</thead>
+											<tbody>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			<footer class="footer">
+				<div class="container-fluid">
+					<nav class="pull-left">
+						<ul class="nav">
+							<li class="nav-item">
+								<a class="nav-link" href="https://www.themekita.com">
+									HeartSport
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									Petunjuk Penggunaan Alat
+								</a>
+							</li>
+							
+						</ul>
+					</nav>
+					<div class="copyright ml-auto">
+						2024, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.themekita.com">Ian Putra</a>
+					</div>				
+				</div>
+			</footer>
+		</div>
+		
+		
+<div class="modal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" id="modal_riwayat_olahraga" style="background-color: rgba(100,100,100,0.5);">
+  <div class="modal-dialog" role="document"  id="modal_dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Riwayat Olahraga</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="close_modal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<div class="isi">
+									<ul class="nav nav-pills nav-secondary  nav-pills-no-bd nav-pills-icons justify-content-center" id="pills-tab-with-icon" role="tablist">
+										<li class="nav-item submenu">
+											<a class="nav-link " id="pills-home-tab-icon" data-toggle="pill" href="#pills-home-icon" role="tab" aria-controls="pills-home-icon" aria-selected="true">
+												<i class="fas fa-heartbeat" id="jantung_nav"></i>
+												Jantung
+											</a>
+										</li>
+										<li class="nav-item submenu">
+											<a class="nav-link" id="pills-profile-tab-icon" data-toggle="pill" href="#pills-profile-icon" role="tab" aria-controls="pills-profile-icon" aria-selected="false" id="oksigen_nav">
+												<i class="fas fa-percent"></i>
+												Oksigen
+											</a>
+										</li>
+										<li class="nav-item submenu">
+											<a class="nav-link" id="pills-contact-tab-icon" data-toggle="pill" href="#pills-contact-icon" role="tab" aria-controls="pills-contact-icon" aria-selected="false" id="suhu_nav">
+												<i class="fas fa-thermometer-empty"></i>
+												Suhu
+											</a>
+										</li>
+									</ul>
+									<div class="tab-content mt-2 mb-3" id="pills-with-icon-tabContent">
+										<div class="tab-pane fade " id="pills-home-icon" role="tabpanel" aria-labelledby="pills-home-tab-icon" id="jantung_tab">
+											<div class="chart-container">
+												<canvas id="detak_riwayat_olahraga"></canvas>
+											</div>
+										</div>
+										<div class="tab-pane fade" id="pills-profile-icon" role="tabpanel" aria-labelledby="pills-profile-tab-icon" id="oksigen_tab">
+											<div class="chart-container">
+												<canvas id="oksigen_riwayat_olahraga"></canvas>
+											</div>
+										</div>
+										<div class="tab-pane fade " id="pills-contact-icon" role="tabpanel" aria-labelledby="pills-contact-tab-icon" id="suhu_tab">
+											<div class="chart-container">
+												<canvas id="suhu_riwayat_olahraga"></canvas>
+											</div>
+										</div>
+									</div>
+								</div>
+	       	
+				
+			
+      </div>
+      <div class="modal-footer">
+        <button style="width: 100%" type="button col-12" class="btn btn-secondary" data-dismiss="modal" onclick="close_modal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+            <%- include('footer.html') %>
+

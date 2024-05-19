@@ -1,0 +1,281 @@
+<%- include('header.html') %>
+						
+		<div class="main-panel">
+			<div class="content">
+				<div class="panel-header bg-primary-gradient">
+					<div class="page-inner py-5">
+						<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+							<div>
+								<h2 class="text-white pb-2 fw-bold">Dashboard</h2>
+								<input type="hidden" id="page" value="dashboard">
+								<h5 class="text-white op-7 mb-2">Selamat datang <%=session.username %>! Mari pantau detak jantung, saturasi oksigen dan suhu tubuh kamu dengan alat ini!</h5>
+							</div>
+							<div class="ml-md-auto py-2 py-md-0">
+								<a href="/mulai_olahraga" class="btn btn-white btn-border btn-round mr-2">Ayo Olahraga!</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="page-inner mt--5">
+					<div class="col-md-12">
+						<div class="card full-height">
+							<div class="card-body">
+								<div class="card-title">Filter <i class="fa fa-filter"></i>
+									<div class="form">
+										<div class="row">
+											<div class="col-md-4">
+												<label>Dari:</label>
+												<input type="datetime-local" name="dari" id="dari" class="form-control">
+											</div>
+											<div class="col-md-4">
+												<label>Sampai:</label>
+												<input type="datetime-local" name="sampai" id="sampai" class="form-control">
+											</div>
+											<div class="col-md-3">
+												<label>Jenis Olahraga:</label>
+												<select class="form-control" id="id_jenis_olahraga" name="id_jenis_olahraga">
+													<option value="0">Semua Olahraga</option>
+													<option value="1">Jogging</option>
+													<option value="2">Bersepeda</option>
+													<option value="3">Streching</option>
+												</select>
+											</div>
+											<div class="col-1">
+												<label>&nbsp</label>
+												<button class="btn btn-success" onclick="refresh_by_filter($('#dari').val(),$('#sampai').val(),$('#id_jenis_olahraga option:selected').val())"><i class="fa fa-search"></i></button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 col-md-4">
+							<div class="card card-stats card-round">
+								<div class="card-body ">
+									<div class="row align-items-center">
+										<div class="col-icon">
+											<div class="icon-big text-center icon-danger bubble-shadow-small">
+												<i class="fas fa-heartbeat"></i>
+											</div>
+										</div>
+										<div class="col col-stats ml-3 ml-sm-0">
+											<div class="numbers">
+												<p class="card-category">Detak Jantung Terakhir</p>
+												<h4 class="card-title" id="detak_terakhir"></h4>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-4">
+							<div class="card card-stats card-round">
+								<div class="card-body">
+									<div class="row align-items-center">
+										<div class="col-icon">
+											<div class="icon-big text-center icon-info bubble-shadow-small">
+												<i class="fas fa-percent"></i>
+											</div>
+										</div>
+										<div class="col col-stats ml-3 ml-sm-0">
+											<div class="numbers">
+												<p class="card-category">Tingkat Oksigen Terakhir</p>
+												<h4 class="card-title" id="oxy_terakhir"></h4>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-4">
+							<div class="card card-stats card-round">
+								<div class="card-body">
+									<div class="row align-items-center">
+										<div class="col-icon">
+											<div class="icon-big text-center icon-success bubble-shadow-small">
+												<i class="fas fa-thermometer-empty"></i>
+											</div>
+										</div>
+										<div class="col col-stats ml-3 ml-sm-0">
+											<div class="numbers">
+												<p class="card-category">Suhu Tubuh Terakhir</p>
+												<h4 class="card-title" id="suhu_terakhir"></h4>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+					<div class="row">
+						<div class="col-md-8">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-title">Detak Jantung & Tingkat Oksigen</div>
+								</div>
+								<div class="card-body">
+									<div class="card-sub">
+										Apabila Filter Kosong Maka Akan Diambilkan Data Hari Ini
+									</div>
+									<div class="chart-container">
+										<canvas id="htmlLegendsChart"></canvas>
+									</div>
+									<div id="myChartLegend"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card">
+								<div class="card-header">
+									<div class="card-title">Suhu Tubuh</div>
+								</div>
+								<div class="card-body">
+									<div class="chart-container"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+										<canvas id="barChart" width="463" height="300" style="display: block; width: 463px; height: 300px;" class="chartjs-render-monitor"></canvas>
+									</div>
+								</div>
+							</div>
+							<div class="card">
+								<div class="card-body pb-0">
+									<div class="h1 fw-bold float-right text-warning" id="total_olahraga"></div>
+									<h2 class="mb-2">Total Data</h2>
+									<p class="text-muted">Anda Telah Berolahraga Sebanyak:</p>
+									<div class="pull-in sparkline-fix">
+										<div id="lineChart"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row row-card-no-pd">
+						<div class="col-md-12">
+							<div class="card">
+								<div class="card-header bg-warning-gradient text-white" >
+									<h4 class="card-title text-white" style="margin: 5px;margin-top: 10px;text-align: center;">Keseluruhan Data</h4>
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="datatable table table-stripped table-borderd" id="datatable_index">
+											<thead>
+												<TR>
+													<th>No.</th>
+													<th>Jenis Olahraga</th>
+													<th>Waktu</th>
+													<th>Detak Jantung</th>
+													<th>Tingkat Oksigen</th>
+													<th>Suhu Tubuh</th>
+												</TR>
+											</thead>
+											<tbody>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			<footer class="footer">
+				<div class="container-fluid">
+					<nav class="pull-left">
+						<ul class="nav">
+							<li class="nav-item">
+								<a class="nav-link" href="https://www.themekita.com">
+									HeartSport
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									Petunjuk Penggunaan Alat
+								</a>
+							</li>
+							
+						</ul>
+					</nav>
+					<div class="copyright ml-auto">
+						2024, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.themekita.com">Ian Putra</a>
+					</div>				
+				</div>
+			</footer>
+		</div>
+		
+		<!-- Custom template | don't include it in your project! -->
+		<div class="custom-template">
+			<div class="title">Settings</div>
+			<div class="custom-content">
+				<div class="switcher">
+					<div class="switch-block">
+						<h4>Logo Header</h4>
+						<div class="btnSwitch">
+							<button type="button" class="changeLogoHeaderColor" data-color="dark"></button>
+							<button type="button" class="selected changeLogoHeaderColor" data-color="blue"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="green"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="red"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="white"></button>
+							<br/>
+							<button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
+						</div>
+					</div>
+					<div class="switch-block">
+						<h4>Navbar Header</h4>
+						<div class="btnSwitch">
+							<button type="button" class="changeTopBarColor" data-color="dark"></button>
+							<button type="button" class="changeTopBarColor" data-color="blue"></button>
+							<button type="button" class="changeTopBarColor" data-color="purple"></button>
+							<button type="button" class="changeTopBarColor" data-color="light-blue"></button>
+							<button type="button" class="changeTopBarColor" data-color="green"></button>
+							<button type="button" class="changeTopBarColor" data-color="orange"></button>
+							<button type="button" class="changeTopBarColor" data-color="red"></button>
+							<button type="button" class="changeTopBarColor" data-color="white"></button>
+							<br/>
+							<button type="button" class="changeTopBarColor" data-color="dark2"></button>
+							<button type="button" class="selected changeTopBarColor" data-color="blue2"></button>
+							<button type="button" class="changeTopBarColor" data-color="purple2"></button>
+							<button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
+							<button type="button" class="changeTopBarColor" data-color="green2"></button>
+							<button type="button" class="changeTopBarColor" data-color="orange2"></button>
+							<button type="button" class="changeTopBarColor" data-color="red2"></button>
+						</div>
+					</div>
+					<div class="switch-block">
+						<h4>Sidebar</h4>
+						<div class="btnSwitch">
+							<button type="button" class="selected changeSideBarColor" data-color="white"></button>
+							<button type="button" class="changeSideBarColor" data-color="dark"></button>
+							<button type="button" class="changeSideBarColor" data-color="dark2"></button>
+						</div>
+					</div>
+					<div class="switch-block">
+						<h4>Background</h4>
+						<div class="btnSwitch">
+							<button type="button" class="changeBackgroundColor" data-color="bg2"></button>
+							<button type="button" class="changeBackgroundColor selected" data-color="bg1"></button>
+							<button type="button" class="changeBackgroundColor" data-color="bg3"></button>
+							<button type="button" class="changeBackgroundColor" data-color="dark"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="custom-toggle">
+				<i class="flaticon-settings"></i>
+			</div> -->
+		</div>
+		<!-- End Custom template -->
+
+            <%- include('footer.html') %>
+
