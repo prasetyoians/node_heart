@@ -1,0 +1,131 @@
+<%- include('header.html') %>
+						
+		<div class="main-panel">
+			<div class="content">
+				<div class="panel-header bg-primary-gradient">
+					<div class="page-inner py-5">
+						<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+							<div>
+								<h2 class="text-white pb-2 fw-bold">Profil</h2>
+								<input type="hidden" id="page" value="profil">
+
+								<h5 class="text-white op-7 mb-2">Ini adalah profil Kamu</h5>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+				<div class="page-inner mt--5">
+					<div class="row">
+						<div class="col-md-8">
+							<div class="card full-height">
+								<div class="card-header">
+									<h2 class="text-center">Profil dan data diri kamu</h2>
+									
+								</div>
+								<div class="card-body">
+									<div class="form">
+										<%  for(var i = 0; i< data.length; i++) { %>
+										
+											<div class="col-md-12">
+												<label class="label">Nama</label>
+												<input type="text" name="nama_pf" id="nama_pf" class="form-control" value="<%= data[i].nama%>">
+											</div>
+
+											<br>
+											<div class="col-md-12">
+												<label class="label">Usia</label>
+												<input type="text" name="usia_pf" id="usia_pf" class="form-control" value="<%= data[i].usia%>">
+											</div>
+											<br>
+											<div class="col-md-12">
+												<label class="label">Username</label>
+												<input type="text" name="username_pf" id="username_pf" class="form-control" value="<%= data[i].username%>">
+											</div>
+											<br>
+											<div class="col-md-12">
+												<label class="label">Password</label>
+												<input type="password" name="password_pf" id="password_pf" class="form-control" value="<%= data[i].password%>">
+											</div>
+											<br>
+											<div class="col-md-12">
+												<label class="label">Kode Alat</label>
+												<select id="id_alat_pf" class="form-control" name="id_alat_pf">
+													<%  for(var i = 0; i< kode_alat.length; i++) { %>
+													<option value="<%= kode_alat[i].id_alat%>"><%= kode_alat[i].kode_alat%> - <%= kode_alat[i].nama_alat%></option>
+													<% }  %>
+
+												</select>
+											</div>
+											<br>
+											<div class="col-md-12">
+												<button class="btn btn-success" style="width: 100%" onclick="save_profil()"><i class="fas fa-save"></i> Simpan</button>	
+											</div>
+											
+										 <% }  %>
+									</div>		
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-4">
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-body ">
+										<h3 class="text-success"><i class="fa fa-info-circle"></i> <b>Tips!</b></h4>
+										<p>Gunakan alat ini untuk olahraga didalam ruangan agar lebih mudah dalam mengkoneksikan alat ke Wi-Fi.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-body">
+										<h3 class="text-danger"><i class="fas fa-battery-full"></i> <b>Charge!</b></h4>
+										<p>Charge Alat sebelum digunakan agar pencatatan maksimal.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-body">
+										<h3 class="text-primary"><i class="fas fa-walking"></i> <b>Mulai Berlahraga!</b></h4>
+										<p>Berolahragalah dengan riang gembira. Hindari merokok dan mengonsumsi minuman keras untuk kesehatan tubuh dan pencatatan data yang lebih baik.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						
+
+					</div>
+					
+				</div>
+			</div>
+			<footer class="footer">
+				<div class="container-fluid">
+					<nav class="pull-left">
+						<ul class="nav">
+							<li class="nav-item">
+								<a class="nav-link" href="https://www.themekita.com">
+									HeartSport
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									Petunjuk Penggunaan Alat
+								</a>
+							</li>
+							
+						</ul>
+					</nav>
+					<div class="copyright ml-auto">
+						2024, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.themekita.com">Ian Putra</a>
+					</div>				
+				</div>
+			</footer>
+		</div>
+		
+
+
+            <%- include('footer.html') %>
+
