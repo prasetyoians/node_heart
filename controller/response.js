@@ -97,6 +97,68 @@ res.render('views/register',{
 
 }
 
+
+async function show_kode_alat(username){
+ return new Promise((resolve, reject) => {
+  pool.query("SELECT * from alat ", (err, result) => {
+ 
+  const hasil = result.rows;
+   resolve(hasil);
+
+    });
+  });
+}
+
+async function profil(req,res){
+   const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.user;
+let id_user = req.session.user.id_user;
+let kode_alat = await show_kode_alat();
+   if (!req.session.user) {
+     res.redirect('/login');
+   }else{
+     pool.query('SELECT * from users WHERE id_user='+id_user, (err, result) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+  const data = result.rows;
+  // Pass data to your HTML rendering function 
+
+res.render('views/profil',{ currentPath: '/profil' ,session:userData,data:data,kode_alat:kode_alat});
+});
+   }
+}
+
+
+async function save_profil(req,res){
+    const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.user;
+let id_user = req.session.user.id_user;
+
+ const username = req.body.username;
+  const password = req.body.password;
+  const nama = req.body.nama;
+  const usia = req.body.usia;
+  const id_alat = req.body.id_alat;
+
+
+  const updateQuery = "UPDATE users SET username ='"+username+"',password ='"+password+"',nama ='"+nama+"',usia ='"+usia+"',id_alat ='"+id_alat+"' WHERE id_user = "+id_user;
+
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Data berhasil diperbarui" });
+  } catch (error) {
+    console.error("data gagal diubah", error);
+  console.log(updateQuery);
+
+    res.status(500).json({ message: "Gagal memperbarui data" });
+  }
+
+}
+
+
 async function cek_user_ada(username){
  return new Promise((resolve, reject) => {
   pool.query("SELECT count(*) as counts FROM users WHERE nama='"+username+"' ", (err, result) => {
@@ -1509,5 +1571,7 @@ module.exports = {
   logout,
   register,
   register_form,
-  bantuan
+  bantuan,
+  profil,
+  save_profil
 };
