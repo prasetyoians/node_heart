@@ -65,14 +65,14 @@
             <li class="nav-item dropdown hidden-caret">
               <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
                 <div class="avatar-sm">
-                  <span class="avatar-title rounded-circle border border-white bg-warning"><%=session.userpot %></span>
+                  <span class="avatar-title rounded-circle border border-white bg-warning" style="font-weight: bold;text-transform: uppercase;"><%=session.userpot %></span>
                 </div>
               </a>
               <ul class="dropdown-menu dropdown-user animated fadeIn">
                 <div class="dropdown-user-scroll scrollbar-outer">
                   <li>
                     <div class="user-box">
-                      <div class="avatar-lg"><span class="avatar-title rounded-circle border border-white bg-warning"><%=session.userpot %></span></div>
+                      <div class="avatar-lg"><span class="avatar-title rounded-circle border border-white bg-warning"  style="font-weight: bold;text-transform: uppercase;"><%=session.userpot %></span></div>
                       <div class="u-text" style="margin-top: 10px;">
                         <h2><%=session.username %></h2>
             
@@ -81,7 +81,7 @@
                   </li>
                   <li>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">User Profile</a>
+                    <a class="dropdown-item" href="/profil">User Profile</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/logout">Logout</a>
                   </li>
@@ -100,7 +100,7 @@
         <div class="sidebar-content">
           <div class="user">
             <div class="avatar-sm float-left mr-2">
-               <span class="avatar-title rounded-circle border border-white bg-warning"><%=session.userpot %></span>
+               <span class="avatar-title rounded-circle border border-white bg-warning"  style="font-weight: bold;text-transform: uppercase;"><%=session.userpot %></span>
             </div>
             <div class="info">
               <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
