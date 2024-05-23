@@ -32,8 +32,20 @@ function count_user_pass(username,password){
 
 
 async function login(req,res){
+ pool.query('SELECT a.* FROM alat as a  LEFT JOIN users as b on a.id_alat = b.id_alat WHERE b.id_alat IS NULL', (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function 
 
-res.render('views/login');
+
+res.render('views/login',{
+  data:data,
+});
+});
+
 
 }
 
@@ -140,10 +152,11 @@ let id_user = req.session.user.id_user;
   const password = req.body.password;
   const nama = req.body.nama;
   const usia = req.body.usia;
+  const jenis_kelamin = req.body.jenis_kelamin;
   const id_alat = req.body.id_alat;
 
 
-  const updateQuery = "UPDATE users SET username ='"+username+"',password ='"+password+"',nama ='"+nama+"',usia ='"+usia+"',id_alat ='"+id_alat+"' WHERE id_user = "+id_user;
+  const updateQuery = "UPDATE users SET username ='"+username+"',password ='"+password+"',nama ='"+nama+"',usia ='"+usia+"',id_alat ='"+id_alat+"',jenis_kelamin ='"+jenis_kelamin+"' WHERE id_user = "+id_user;
 
   console.log(updateQuery);
   try {
@@ -175,12 +188,13 @@ async function register_form(req,res){
   const password = req.body.password;
   const nama = req.body.nama;
   const usia = req.body.usia;
+  const jenis_kelamin = req.body.jenis_kelamin;
   const id_alat = req.body.id_alat;
 
 
-const insertQuery = 'INSERT INTO users(username, password,nama,usia,id_alat) VALUES($1,$2,$3,$4,$5) RETURNING *';
+const insertQuery = 'INSERT INTO users(username, password,nama,usia,jenis_kelamin,id_alat) VALUES($1,$2,$3,$4,$5,$6) RETURNING *';
 
- const kirim = await pool.query(insertQuery, [username, password,nama,usia,id_alat]);
+ const kirim = await pool.query(insertQuery, [username, password,nama,usia,jenis_kelamin,id_alat]);
     // console.log(insertQuery);
   console.log(kirim);
   if (kirim.rowCount !== 1) {
