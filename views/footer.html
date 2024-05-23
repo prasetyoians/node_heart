@@ -942,6 +942,7 @@ function close_modal(){
 
 function save_profil(){
   var nama = $("#nama_pf").val();
+  var jenis_kelamin = $("#jenis_kelamin_pf").val();
   var username = $("#username_pf").val();
   var password = $("#password_pf").val();
   var usia = $("#usia_pf").val();
@@ -953,6 +954,7 @@ function save_profil(){
     password:password,
     id_alat:id_alat,
     usia:usia,
+    jenis_kelamin:jenis_kelamin,
   }
   $.ajax({
     url : "/save_profil",
