@@ -100,6 +100,10 @@
                   </div>
                   <div class="login-form">
                     <div class="form-group form-floating-label">
+                      <input id="nama_reg" name="nama_reg" type="text" class="form-control input-border-bottom" required="">
+                      <label for="username" class="placeholder">Nama Lengkap</label>
+                    </div>
+                    <div class="form-group form-floating-label">
                       <input id="username_reg" name="username_reg" type="text" class="form-control input-border-bottom" required="">
                       <label for="username" class="placeholder">Username</label>
                     </div>
@@ -112,13 +116,21 @@
                       <input id="usia_reg" name="usia_reg" type="text" class="form-control input-border-bottom" required="">
                       <label for="usia" class="placeholder">Usia</label>
                     </div>
+                    <br>
+                    <div class="form-group form-floating-label">
+                      <select class="form-control" id="jenis_kelamin_reg">
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                      </select>
+                      <label for="alat" class="placeholder">Jenis Kelamin</label>
+                    </div>
+                    <br>
                     <div class="form-group form-floating-label">
                       <select class="form-control" id="id_alat_reg">
-                        <option value="1">123456</option>
-                        <option value="2">222222</option>
-                        <option value="3">333333</option>
-                        <option value="4">444444</option>
-                        <option value="5">555555</option>
+                        <%  for(var i = 0; i< data.length; i++) { %>
+                          <option value="<%= data[i].id_alat%>"><%= data[i].kode_alat%> - <%= data[i].nama_alat%></option>
+                          <% }  %>
+
                       </select>
                       <label for="alat" class="placeholder">Kode Alat</label>
                     </div>
@@ -253,15 +265,19 @@ function show_login(){
 
 
 function register(){
+  var nama_reg = $("#nama_reg").val();
   var username_reg = $("#username_reg").val();
   var password_reg = $("#password_reg").val();
   var usia_reg =$("#usia_reg").val();
+  var jenis_kelamin_reg =$("#jenis_kelamin_reg").val();
   var id_alat_reg =$("#id_alat_reg option:selected").val();
 
   var data = {
+    nama:nama_reg,
     username:username_reg,
     password:password_reg,
     usia:usia_reg,
+    jenis_kelamin:jenis_kelamin_reg,
     id_alat:id_alat_reg,
   }
    $.ajax({
