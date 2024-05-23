@@ -110,6 +110,8 @@ app.get('/insertDataToHeart', require("./controller/response").insertDataToHeart
 app.get('/cek_jadwal', require("./controller/response").cek_jadwal);
 
 app.get('/bantuan', require("./controller/response").bantuan);
+app.get('/profil', require("./controller/response").profil);
+app.post('/save_profil', require("./controller/response").save_profil);
 
 
 // app.get('/tes', (req, res) => {
