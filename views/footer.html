@@ -939,6 +939,41 @@ function close_modal(){
   $("#suhu_tab").removeClass("active show");
 
 }
+
+function save_profil(){
+  var nama = $("#nama_pf").val();
+  var username = $("#username_pf").val();
+  var password = $("#password_pf").val();
+  var usia = $("#usia_pf").val();
+  var id_alat = $("#id_alat_pf").val();
+
+  var data = {
+    nama:nama,
+    username:username,
+    password:password,
+    id_alat:id_alat,
+    usia:usia,
+  }
+  $.ajax({
+    url : "/save_profil",
+    method:"POST",
+    dataType:"JSON",
+    data:data,
+    success:function(response){
+        swal({
+                    title: "Berhasil!",
+                    text: "Data Sudah Tersimpan!",
+                    icon: "success"
+                  });
+                  window.location.href = '/profil';
+
+
+    
+    }
+  });
+}
+
+
 //fungsi format time
 function formatTime(inputDate) {
   const date = new Date(inputDate);
