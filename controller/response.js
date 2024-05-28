@@ -207,7 +207,7 @@ async function show_users(username){
 }
 
 
-async function show_jenis_olahraga(username){
+async function show_jenis_olahraga(){
  return new Promise((resolve, reject) => {
   pool.query("SELECT * from jenis_olahraga ", (err, result) => {
  
