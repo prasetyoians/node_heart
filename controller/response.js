@@ -1015,7 +1015,7 @@ if (id_jenis_olahraga == 0 && id_user == 0) {
 
 }
 
- pool.query("SELECT COUNT(a.id_mulai_olahraga) as counts,b.nama_olahraga FROM mulai_olahraga as a INNER JOIN jenis_olahraga as b on a.id_jenis_olahraga = b.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" GROUP BY a.id_jenis_olahraga,b.id_jenis_olahraga", (err, result) => {
+ pool.query("SELECT COUNT(a.id_mulai_olahraga) as counts,b.nama_olahraga FROM mulai_olahraga as a INNER JOIN jenis_olahraga as b on a.id_jenis_olahraga = b.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" GROUP BY a.id_jenis_olahraga,b.id_jenis_olahraga,b.nama_olahraga", (err, result) => {
   if (err) {
     console.error(err);
     return;
