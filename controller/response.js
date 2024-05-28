@@ -31,6 +31,22 @@ function count_user_pass(username,password){
 }
 
 
+function count_user_pass_super_admin(username,password){
+
+  var arr_hasil = [];
+  return new Promise((resolve, reject) => {
+  pool.query("SELECT count(*) as counts FROM super_users WHERE username='"+username+"' AND  password ='"+password+"' ", (err, result) => {
+  console.log( result);
+
+  const hasil = result.rows[0].counts;
+
+   resolve(hasil);
+
+    });
+  });
+}
+
+
 async function login(req,res){
  pool.query('SELECT a.* FROM alat as a  LEFT JOIN users as b on a.id_alat = b.id_alat WHERE b.id_alat IS NULL', (err, result) => {
   if (err) {
@@ -47,6 +63,63 @@ res.render('views/login',{
 });
 
 
+}
+
+
+async function login_super_admin(req,res){
+
+  // Pass data to your HTML rendering function 
+
+
+res.render('views/super_admin/login_super_admin');
+
+
+
+}
+
+
+async function login_form_super_admin(req,res){
+  const username = req.body.username;
+  const password = req.body.password;
+
+console.log("username: "+username);
+console.log("pass: "+password);
+
+
+let c = await count_user_pass_super_admin(username,password);
+
+console.log(c);
+  if (c > 0) {
+
+    pool.query("SELECT * FROM super_users WHERE username='"+username+"' AND  password ='"+password+"' ORDER BY id_super_user DESC LIMIT 1", (err, result) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    const data = result.rows;
+   
+     req.session.super_admin = { id_super_user: data[0].id_user, username: data[0].username,userpot: data[0].username.substring(0, 1) };
+    res.status(200).json({pesan:"LOGIN BERHASIL",status:1});
+
+  });
+
+
+
+}else{
+  console.log("username pass salah");
+    res.status(200).json({pesan:"LOGIN GAGAL",status:0});
+
+}
+
+}
+
+
+
+async function logout_super_admin(req,res){
+     req.session = null;
+
+  // Redirect atau lakukan tindakan lain sesuai kebutuhan
+  res.redirect('/login_super_admin');
 }
 
 async function login_form(req,res){
@@ -113,6 +186,30 @@ res.render('views/register',{
 async function show_kode_alat(username){
  return new Promise((resolve, reject) => {
   pool.query("SELECT * from alat ", (err, result) => {
+ 
+  const hasil = result.rows;
+   resolve(hasil);
+
+    });
+  });
+}
+
+
+async function show_users(username){
+ return new Promise((resolve, reject) => {
+  pool.query("SELECT * from users ", (err, result) => {
+ 
+  const hasil = result.rows;
+   resolve(hasil);
+
+    });
+  });
+}
+
+
+async function show_jenis_olahraga(username){
+ return new Promise((resolve, reject) => {
+  pool.query("SELECT * from jenis_olahraga ", (err, result) => {
  
   const hasil = result.rows;
    resolve(hasil);
@@ -208,6 +305,182 @@ const insertQuery = 'INSERT INTO users(username, password,nama,usia,jenis_kelami
 
 
   }
+
+
+
+async function index_super_admin(req,res){
+  const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.super_admin;
+
+
+let jenis_olahraga = await show_jenis_olahraga();
+let users = await show_users();
+
+   if (!req.session.super_admin) {
+     res.redirect('/login_super_admin');
+   }else{
+
+res.render('views/super_admin/index_super_admin',{ currentPath: '/' ,session:userData,jenis_olahraga:jenis_olahraga,users:users});
+
+   }
+
+
+
+}
+
+
+
+
+async function user_super_admin(req,res){
+  const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.super_admin;
+
+
+let jenis_olahraga = await show_jenis_olahraga();
+let users = await show_users();
+
+   if (!req.session.super_admin) {
+     res.redirect('/login_super_admin');
+   }else{
+
+res.render('views/super_admin/user_super_admin',{ currentPath: '/' ,session:userData,jenis_olahraga:jenis_olahraga,users:users});
+
+   }
+
+
+
+}
+
+async function show_table_user_super_admin(req,res){
+var search = req.query.search;
+
+if (search == "") {
+pool.query("SELECT a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_alat FROM users as a INNER JOIN mulai_olahraga as b on a.id_user = b.id_user INNER JOIN heart as c on b.id_mulai_olahraga = c.id_mulai_olahraga INNER JOIN alat as d on a.id_alat = d.id_alat  ORDER BY a.nama ASC", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+}else{
+
+ pool.query("SELECT a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_alat FROM users as a INNER JOIN mulai_olahraga as b on a.id_user = b.id_user INNER JOIN heart as c on b.id_mulai_olahraga = c.id_mulai_olahraga INNER JOIN alat as d on a.id_alat = d.id_alat WHERE a.nama LIKE '%"+search+"%'  OR a.username LIKE '%"+search+"%' OR d.kode_alat LIKE '%"+search+"%' OR a.jenis_kelamin LIKE '%"+search+"%'      ORDER BY a.nama ASC", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+}
+
+ 
+
+}
+
+
+async function show_modal_detail_user_super_admin(req,res){
+
+id_user = req.query.id_user;
+
+pool.query("SELECT AVG(c.hr) as avghr,AVG(c.spo2) as avgoxy,AVG(c.suhu)  as avgsuhu,MAX(hr) as maxhr,MAX(spo2) as maxoxy,MAX(suhu) as maxsuhu,MIN(hr) as minhr,MIN(spo2) as minoxy,MIN(suhu) as minsuhu, a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_alat FROM users as a INNER JOIN mulai_olahraga as b on a.id_user = b.id_user INNER JOIN heart as c on b.id_mulai_olahraga = c.id_mulai_olahraga INNER JOIN alat as d on a.id_alat = d.id_alat GROUP BY a.id_user,d.kode_alat ORDER BY a.nama ASC", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+
+ 
+
+}
+
+
+async function jantung_super_admin(req,res){
+  const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.super_admin;
+
+
+let jenis_olahraga = await show_jenis_olahraga();
+let users = await show_users();
+
+   if (!req.session.super_admin) {
+     res.redirect('/login_super_admin');
+   }else{
+
+res.render('views/super_admin/jantung_super_admin',{ currentPath: '/' ,session:userData,jenis_olahraga:jenis_olahraga,users:users});
+
+   }
+
+
+
+}
+
+
+async function oxy_super_admin(req,res){
+  const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.super_admin;
+
+
+let jenis_olahraga = await show_jenis_olahraga();
+let users = await show_users();
+
+   if (!req.session.super_admin) {
+     res.redirect('/login_super_admin');
+   }else{
+
+res.render('views/super_admin/oxy_super_admin',{ currentPath: '/' ,session:userData,jenis_olahraga:jenis_olahraga,users:users});
+
+   }
+
+
+
+}
+
+
+
+async function suhu_super_admin(req,res){
+  const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.super_admin;
+
+
+let jenis_olahraga = await show_jenis_olahraga();
+let users = await show_users();
+
+   if (!req.session.super_admin) {
+     res.redirect('/login_super_admin');
+   }else{
+
+res.render('views/super_admin/suhu_super_admin',{ currentPath: '/' ,session:userData,jenis_olahraga:jenis_olahraga,users:users});
+
+   }
+
+
+
+}
 
 
 
@@ -712,6 +985,571 @@ if(id_jenis_olahraga == 0){
 
 });
 }
+
+}
+
+
+
+async function show_by_jenis_olahraga(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND a.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND a.id_user="+id_user;
+
+}else{
+  queryString=" AND a.id_jenis_olahraga="+id_jenis_olahraga+" AND a.id_user="+id_user;
+
+}
+
+ pool.query("SELECT COUNT(a.id_mulai_olahraga) as counts,b.nama_olahraga FROM mulai_olahraga as a INNER JOIN jenis_olahraga as b on a.id_jenis_olahraga = b.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" GROUP BY a.id_jenis_olahraga,b.id_jenis_olahraga", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+
+async function show_rata_by_jenis_olahraga(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+ pool.query("SELECT AVG(a.hr) as avg_jantung,AVG(a.spo2) as avg_oxy,AVG(suhu) as avg_suhu,c.nama_olahraga FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN jenis_olahraga as c on b.id_jenis_olahraga = c.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" GROUP BY c.id_jenis_olahraga,c.nama_olahraga", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+
+async function show_rata_by_usia(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+ pool.query("SELECT AVG(a.hr) as avg_jantung,AVG(a.spo2) as avg_oxy,AVG(suhu) as avg_suhu,c.usia FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN users as c on b.id_user = c.id_user WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" GROUP BY c.id_user,c.usia", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+async function show_rata_by_jenis_kelamin(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+ pool.query("SELECT AVG(a.hr) as avg_jantung,AVG(a.spo2) as avg_oxy,AVG(suhu) as avg_suhu,c.jenis_kelamin FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN users as c on b.id_user = c.id_user WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" GROUP BY c.jenis_kelamin", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+
+async function show_hasil_pengukuran(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+ pool.query("SELECT a.hr,a.spo2,a.suhu,a.timestamp FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN users as c on b.id_user = c.id_user WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" ORDER BY a.id DESC", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+async function show_total_rata(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+let diambil = req.query.diambil;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+var avg = "";
+if (diambil == "jantung") {
+  avg = "hr";
+}else if (diambil == "oxy") {
+  avg = "spo2";
+}else if (diambil == "suhu") {
+  avg = "suhu";
+}
+ pool.query("SELECT AVG(a."+avg+") as avgs FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" ", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+
+async function show_max(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+let diambil = req.query.diambil;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+var max = "";
+if (diambil == "jantung") {
+  max = "hr";
+}else if (diambil == "oxy") {
+  max = "spo2";
+}else if (diambil == "suhu") {
+  max = "suhu";
+}
+
+pool.query("SELECT a."+max+",c.username,b.tempat,d.nama_olahraga,a.timestamp FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN users as c on b.id_user = c.id_user INNER JOIN jenis_olahraga as d on b.id_jenis_olahraga = d.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" ORDER BY a."+max+" DESC LIMIT 1", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+async function show_min(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+let diambil = req.query.diambil;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+var min = "";
+if (diambil == "jantung") {
+  min = "hr";
+}else if (diambil == "oxy") {
+  min = "spo2";
+}else if (diambil == "suhu") {
+  min = "suhu";
+}
+
+pool.query("SELECT a."+min+",c.username,b.tempat,d.nama_olahraga,a.timestamp FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN users as c on b.id_user = c.id_user INNER JOIN jenis_olahraga as d on b.id_jenis_olahraga = d.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" ORDER BY a."+min+" ASC LIMIT 1", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+async function show_table_admin(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+ pool.query("SELECT a.hr,a.spo2,a.suhu,a.timestamp,d.nama_olahraga,c.username,c.jenis_kelamin,c.usia,b.tempat FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN users as c on b.id_user = c.id_user INNER JOIN jenis_olahraga as d on b.id_jenis_olahraga = d.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" ORDER BY a.id DESC", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+
+
+async function show_by_jenis_kelamin(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND a.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND a.id_user="+id_user;
+
+}else{
+  queryString=" AND a.id_jenis_olahraga="+id_jenis_olahraga+" AND a.id_user="+id_user;
+
+}
+
+ pool.query("SELECT COUNT(a.id_mulai_olahraga) as counts,b.jenis_kelamin FROM mulai_olahraga as a INNER JOIN users as b on a.id_user = b.id_user WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" GROUP BY b.jenis_kelamin", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+
+async function show_by_usia(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND a.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND a.id_user="+id_user;
+
+}else{
+  queryString=" AND a.id_jenis_olahraga="+id_jenis_olahraga+" AND a.id_user="+id_user;
+
+}
+
+ pool.query("SELECT COUNT(a.id_mulai_olahraga) as counts,b.usia FROM mulai_olahraga as a INNER JOIN users as b on a.id_user = b.id_user WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" GROUP BY b.usia", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+async function show_by_user(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.query.id_user;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND a.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND a.id_user="+id_user;
+
+}else{
+  queryString=" AND a.id_jenis_olahraga="+id_jenis_olahraga+" AND a.id_user="+id_user;
+
+}
+
+ pool.query("SELECT COUNT(a.id_mulai_olahraga) as counts,b.username FROM mulai_olahraga as a INNER JOIN users as b on a.id_user = b.id_user WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" GROUP BY b.username", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
 
 }
 
@@ -1587,5 +2425,27 @@ module.exports = {
   register_form,
   bantuan,
   profil,
-  save_profil
+  save_profil,
+  login_super_admin,
+  logout_super_admin,
+  login_form_super_admin,
+  index_super_admin,
+  show_by_jenis_olahraga,
+  show_by_jenis_kelamin,
+  show_by_usia,
+  show_by_user,
+  jantung_super_admin,
+  show_rata_by_jenis_olahraga,
+  show_rata_by_usia,
+  show_rata_by_jenis_kelamin,
+  show_hasil_pengukuran,
+  show_total_rata,
+  show_max,
+  show_min,
+  show_table_admin,
+  oxy_super_admin,
+  suhu_super_admin,
+  user_super_admin,
+  show_table_user_super_admin,
+  show_modal_detail_user_super_admin,
 };

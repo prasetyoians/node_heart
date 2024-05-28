@@ -114,26 +114,34 @@ app.get('/profil', require("./controller/response").profil);
 app.post('/save_profil', require("./controller/response").save_profil);
 
 
-// app.get('/tes', (req, res) => {
-// 	//  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+//Super admin
 
-//    const viewPath = path.join(__dirname, 'views', 'index.html');
-//     const publicPath = path.join(__dirname, 'public');
+app.get('/login_super_admin', require("./controller/response").login_super_admin);
+app.get('/logout_super_admin', require("./controller/response").logout_super_admin);
+app.post('/login_form_super_admin', require("./controller/response").login_form_super_admin);
+app.get('/index_super_admin', require("./controller/response").index_super_admin);
+app.get('/show_by_jenis_olahraga', require("./controller/response").show_by_jenis_olahraga);
+app.get('/show_by_jenis_kelamin', require("./controller/response").show_by_jenis_kelamin);
+app.get('/show_by_usia', require("./controller/response").show_by_usia);
+app.get('/show_by_user', require("./controller/response").show_by_user);
 
-// 	fs.readFile(viewPath,'utf8',function (err, data){
-// 		 if (err) {
-// 		 	res.writeHead(404,{'Content-type':'text/html'});
-// 		 	res.write("404 halaman tidak ditemukan");
-// 		 	return res.end();
-// 		 }else{
-// 			  res.writeHead(200, { 'Content-Type': 'text/html' });
-// 		        // Use custom function to replace placeholders with actual content
-// 		        data = replaceIncludes(data, 'header.html', 'footer.html');
-// 		        res.end(data);
-// 		 }
-// 	});
+app.get('/jantung_super_admin', require("./controller/response").jantung_super_admin);
+app.get('/show_rata_by_jenis_olahraga', require("./controller/response").show_rata_by_jenis_olahraga);
+app.get('/show_rata_by_usia', require("./controller/response").show_rata_by_usia);
+app.get('/show_rata_by_jenis_kelamin', require("./controller/response").show_rata_by_jenis_kelamin);
+app.get('/show_hasil_pengukuran', require("./controller/response").show_hasil_pengukuran);
+app.get('/show_total_rata', require("./controller/response").show_total_rata);
+app.get('/show_max', require("./controller/response").show_max);
+app.get('/show_min', require("./controller/response").show_min);
+app.get('/show_table_admin', require("./controller/response").show_table_admin);
 
-// });
+app.get('/oxy_super_admin', require("./controller/response").oxy_super_admin);
+app.get('/suhu_super_admin', require("./controller/response").suhu_super_admin);
+app.get('/user_super_admin', require("./controller/response").user_super_admin);
+app.get('/show_table_user_super_admin', require("./controller/response").show_table_user_super_admin);
+app.get('/show_modal_detail_user_super_admin', require("./controller/response").show_modal_detail_user_super_admin);
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port 3000}`)
@@ -147,10 +155,18 @@ function replaceIncludes(content, headerFileName, footerFileName) {
   
   const headerContent = fs.readFileSync(headerPath, 'utf8');
   const footerContent = fs.readFileSync(footerPath, 'utf8');
+
+  const headerPathSuperAdmin = path.join(__dirname, 'views/super_admin', headerFileName);
+  const footerPathSuperAdmin = path.join(__dirname, 'views/super_admin', footerFileName);
+  
+  const headerContentSuperAdmin = fs.readFileSync(headerPathSuperAdmin, 'utf8');
+  const footerContentSuperAdmin = fs.readFileSync(footerPathSuperAdmin, 'utf8');
   
   // Replace placeholders in the main content
   content = content.replace(/<%- include\('header.html'\) %>/g, headerContent);
   content = content.replace(/<%- include\('footer.html'\) %>/g, footerContent);
+  content = content.replace(/<%- include\('header_super_admin.html'\) %>/g, headerContentSuperAdmin);
+  content = content.replace(/<%- include\('footer_super_admin.html'\) %>/g, footerContentSuperAdmin);
 
   return content;
 }

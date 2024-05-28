@@ -1,0 +1,226 @@
+<%- include('header_super_admin.html') %>
+						
+		<div class="main-panel">
+			<div class="content">
+				<div class="panel-header bg-success-gradient">
+					<div class="page-inner py-5">
+						<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+							<div>
+								<h2 class="text-white pb-2 fw-bold">Dashboard</h2>
+								<input type="hidden" id="page" value="dashboard">
+								<h5 class="text-white op-7 mb-2">Selamat datang <%=session.username %>, Ini adalah portal untuk memantau Hasil pengukuran oleh para user</h5>
+							</div>
+							<div class="ml-md-auto py-2 py-md-0">
+								<!-- <a href="/mulai_olahraga" class="btn btn-white btn-border btn-round mr-2">Ayo Olahraga!</a> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="page-inner mt--5">
+					<div class="col-md-12">
+						<div class="card full-height">
+							<div class="card-body">
+								<div class="card-title">Filter <i class="fa fa-filter"></i>
+									<div class="form">
+										<div class="row">
+											<div class="col-md-2">
+												<label>Dari:</label>
+												<input type="datetime-local" name="dari" id="dari" class="form-control">
+											</div>
+											<div class="col-md-2">
+												<label>Sampai:</label>
+												<input type="datetime-local" name="sampai" id="sampai" class="form-control">
+											</div>
+											<div class="col-md-3">
+												<label>Jenis Olahraga:</label>
+												<select class="form-control select2" id="id_jenis_olahraga" name="id_jenis_olahraga">
+													<option value="0">Semua Olahraga</option>
+													<%  for(var i = 0; i< jenis_olahraga.length; i++) { %>
+													<option value="<%=jenis_olahraga[i].id_jenis_olahraga%>"><%= jenis_olahraga[i].nama_olahraga%></option>
+										 			<% }  %>
+												</select>
+											</div>
+											<div class="col-md-4">
+												<label>User:</label>
+												<select class="form-control select2" id="id_user" name="id_user">
+													<option value="0">Semua User</option>
+													<%  for(var i = 0; i< users.length; i++) { %>
+													<option value="<%= users[i].id_user%>"><%= users[i].nama%></option>
+										 			<% }  %>
+
+												</select>
+											</div>
+											<div class="col-1">
+												<label>&nbsp</label>
+												<button class="btn btn-success" onclick="refresh_by_filter($('#dari').val(),$('#sampai').val(),$('#id_jenis_olahraga option:selected').val(),$('#id_user option:selected').val() )"><i class="fa fa-search"></i></button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6 col-md-6">
+							<div class="card card-stats card-round">
+								<div class="card-header">
+									<h5>Banyak Olahraga yang dilakukan Berdasarkan Jenis Olahraga</h5>
+								</div>
+								<div class="card-body ">
+										
+										<div class="col-md-12">
+											<canvas id="by_jenis_olahraga"></canvas>
+										</div>
+									
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-6">
+							<div class="card card-stats card-round">
+								<div class="card-header">
+										<h5>Banyak Olahraga yang dilakukan Berdasarkan Jenis Kelamin</h5>
+								</div>
+								<div class="card-body">
+									
+									<div class="row align-items-center">
+										
+										<div class="col-md-12">
+											<canvas id="by_jenis_kelamin"></canvas>
+											
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-6">
+							<div class="card card-stats card-round">
+								<div class="card-header">
+										<h5>Banyak Olahraga yang dilakukan Berdasarkan Usia</h5>
+								</div>
+								<div class="card-body">
+									<div class="row align-items-center">
+										
+										<div class="col-12">
+											<canvas id="by_usia"></canvas>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-6">
+							<div class="card card-stats card-round">
+								<div class="card-header">
+										<h5>Banyak Olahraga yang dilakukan Berdasarkan User</h5>
+								</div>
+								<div class="card-body">
+									<div class="row align-items-center">
+										
+										<div class="col col-stats ml-3 ml-sm-0">
+											<canvas id="by_user"></canvas>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+					
+						
+					
+					
+				</div>
+			</div>
+			<footer class="footer">
+				<div class="container-fluid">
+					<nav class="pull-left">
+						<ul class="nav">
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									HeartSport Administrator
+								</a>
+							</li>
+							
+							
+						</ul>
+					</nav>
+					<div class="copyright ml-auto">
+						2024, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.themekita.com">Ian Putra</a>
+					</div>				
+				</div>
+			</footer>
+		</div>
+		
+		<!-- Custom template | don't include it in your project! -->
+		<div class="custom-template">
+			<div class="title">Settings</div>
+			<div class="custom-content">
+				<div class="switcher">
+					<div class="switch-block">
+						<h4>Logo Header</h4>
+						<div class="btnSwitch">
+							<button type="button" class="changeLogoHeaderColor" data-color="dark"></button>
+							<button type="button" class="selected changeLogoHeaderColor" data-color="blue"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="green"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="red"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="white"></button>
+							<br/>
+							<button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
+							<button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
+						</div>
+					</div>
+					<div class="switch-block">
+						<h4>Navbar Header</h4>
+						<div class="btnSwitch">
+							<button type="button" class="changeTopBarColor" data-color="dark"></button>
+							<button type="button" class="changeTopBarColor" data-color="blue"></button>
+							<button type="button" class="changeTopBarColor" data-color="purple"></button>
+							<button type="button" class="changeTopBarColor" data-color="light-blue"></button>
+							<button type="button" class="changeTopBarColor" data-color="green"></button>
+							<button type="button" class="changeTopBarColor" data-color="orange"></button>
+							<button type="button" class="changeTopBarColor" data-color="red"></button>
+							<button type="button" class="changeTopBarColor" data-color="white"></button>
+							<br/>
+							<button type="button" class="changeTopBarColor" data-color="dark2"></button>
+							<button type="button" class="selected changeTopBarColor" data-color="blue2"></button>
+							<button type="button" class="changeTopBarColor" data-color="purple2"></button>
+							<button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
+							<button type="button" class="changeTopBarColor" data-color="green2"></button>
+							<button type="button" class="changeTopBarColor" data-color="orange2"></button>
+							<button type="button" class="changeTopBarColor" data-color="red2"></button>
+						</div>
+					</div>
+					<div class="switch-block">
+						<h4>Sidebar</h4>
+						<div class="btnSwitch">
+							<button type="button" class="selected changeSideBarColor" data-color="white"></button>
+							<button type="button" class="changeSideBarColor" data-color="dark"></button>
+							<button type="button" class="changeSideBarColor" data-color="dark2"></button>
+						</div>
+					</div>
+					<div class="switch-block">
+						<h4>Background</h4>
+						<div class="btnSwitch">
+							<button type="button" class="changeBackgroundColor" data-color="bg2"></button>
+							<button type="button" class="changeBackgroundColor selected" data-color="bg1"></button>
+							<button type="button" class="changeBackgroundColor" data-color="bg3"></button>
+							<button type="button" class="changeBackgroundColor" data-color="dark"></button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="custom-toggle">
+				<i class="flaticon-settings"></i>
+			</div> -->
+		</div>
+		<!-- End Custom template -->
+
+            <%- include('footer_super_admin.html') %>
+

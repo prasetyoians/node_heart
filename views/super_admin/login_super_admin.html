@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Login</title>
+  <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+  <link rel="icon" href="../assets/img/icon.ico" type="image/x-icon"/>
+
+  <!-- Fonts and icons -->
+  <script src="../assets/js/plugin/webfont/webfont.min.js"></script>
+  <script>
+    WebFont.load({
+      google: {"families":["Lato:300,400,700,900"]},
+      custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['../assets/css/fonts.min.css']},
+      active: function() {
+        sessionStorage.fonts = true;
+      }
+    });
+  </script>
+  
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/atlantis.css">
+</head>
+<body class="login bg-success-gradient" style="width: 98%;">
+
+<div class="row justify-content-center align-items-center mb-5 m-1" id="show_login">
+           
+          
+            <div class="col-md-4 mt-1">
+              <div class="card card-profile card-rouded" style="border-top-left-radius:10px;border-top-right-radius: 10px;">
+                <div class="card-header" style="background-image: url('../assets/img/examples/product10.jpeg');border-top-left-radius:10px;border-top-right-radius: 10px; box-shadow: 0px 5px 5px  silver">
+                  <div class="profile-picture">
+                    <div class="avatar avatar-xl">
+                      <img src="../assets/heart-rate.jpg" alt="..." class="avatar-img rounded-circle" style="border:2px solid rgb(100,120,220); box-shadow: 5px 5px 5px  silver">
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body card-rounded">
+                  <div class="user-profile text-center">
+                    <div class="name">Login Super Admin</div>
+                    <div class="job">HeartSport</div>
+                    <div class="desc">Portal Login Untuk Research Super Admin</div>
+                    
+
+                  </div>
+                  <div class="login-form">
+                    <div class="form-group form-floating-label">
+                      <input id="username" name="username" type="text" class="form-control input-border-bottom" required="">
+                      <label for="username" class="placeholder">Username</label>
+                    </div>
+                    <div class="form-group form-floating-label">
+                      <input id="password" name="password" type="password" class="form-control input-border-bottom" required="">
+                      <label for="password" class="placeholder">Password</label>
+                      <div class="show-password text-right">
+                       <p class="text-primary">Show Password <i class="icon-eye"></i></p> 
+                      </div>
+                    </div>
+                   
+                  </div>
+                  <div class="view-profile mb-10">
+                      <a href="#" class="btn btn-success btn-block" onclick="login()">Login</a>
+                  </div>
+                    <br>
+                   
+                </div>
+               
+              </div>
+            </div>
+          </div>
+
+<!-- show register
+ -->
+
+<script src="../assets/js/core/jquery.3.2.1.min.js"></script>
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
+
+  <!-- jQuery UI -->
+  <script src="../assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+  <script src="../assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+
+  <!-- jQuery Scrollbar -->
+  <script src="../assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+
+  <!-- Chart JS -->
+  <script src="../assets/js/plugin/chart.js/chart.min.js"></script>
+
+  <!-- jQuery Sparkline -->
+  <script src="../assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+  <!-- Chart Circle -->
+  <script src="../assets/js/plugin/chart-circle/circles.min.js"></script>
+
+  <!-- Datatables -->
+  <script src="../assets/js/plugin/datatables/datatables.min.js"></script>
+
+  <!-- Bootstrap Notify -->
+  <script src="../assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+  <!-- jQuery Vector Maps -->
+  <script src="../assets/js/plugin/jqvmap/jquery.vmap.min.js"></script>
+  <script src="../assets/js/plugin/jqvmap/maps/jquery.vmap.world.js"></script>
+
+  <!-- Sweet Alert -->
+  <script src="../assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+  <!-- Atlantis JS -->
+  <script src="../assets/js/atlantis.min.js"></script>
+
+
+
+
+  <script type="text/javascript">
+
+$("document").ready(function(){
+
+});
+
+
+
+  
+    function login() {
+  // Mengambil nilai dari input form
+  var username = $("#username").val();
+  var password = $("#password").val();
+
+  // Membuat objek data untuk dikirim ke server
+  var data = {
+    username: username,
+    password: password,
+  };
+
+  // Mengirim data ke server menggunakan AJAX
+  $.ajax({
+    url: "/login_form_super_admin", // Ganti dengan URL yang sesuai
+    method: "POST", // Menggunakan metode POST untuk menambahkan data
+    dataType: "JSON",
+    data: data,
+    success: function(json) {
+      
+
+          if(json.status == 1){
+
+             swal({
+                    title: "Berhasil!",
+                    text: "Login Akun Berhasil!",
+                    icon: "success"
+                  });
+              setTimeout(function() {
+                  window.location.href = '/index_super_admin';
+
+              },2000);
+        }else{
+           swal({
+            title: "Gagal!",
+            text: "Username/Password Salah. Silahkan Ulangi!",
+            icon: "error"
+          });
+        }
+      
+      
+    },
+    error: function(error) {
+      // Menangani kesalahan jika ada
+      console.error("Gagal Login:", error);
+       swal({
+            title: "Gagal!",
+            text: "Username/Password Salah. Silahkan Ulangi!",
+            icon: "error"
+          });
+    },
+  });
+}
+
+
+
+  </script>
+</body>
+</html>

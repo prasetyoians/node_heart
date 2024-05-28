@@ -258,7 +258,11 @@ function show_login(){
     error: function(error) {
       // Menangani kesalahan jika ada
       console.error("Gagal Login:", error);
-      alert("Username Atau Password salah!")
+       swal({
+            title: "Gagal!",
+            text: "User/pass salah. Silahkan Ulangi!",
+            icon: "error"
+          });
     },
   });
 }
@@ -298,7 +302,7 @@ function register(){
               setTimeout(function() {
                   window.location.href = '/login';
 
-              }, 2000);
+              });
         }else{
            swal({
             title: "Gagal!",

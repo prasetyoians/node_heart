@@ -1,0 +1,78 @@
+SELECT a.hr,a.spo2,a.id_mulai_olahraga,b.id_jenis_olahraga,a.timestamp,a.id_user FROM heart as a
+INNER JOIN mulai_olahraga as b ON a.id_mulai_olahraga = b.id_mulai_olahraga
+WHERE a.timestamp >='2024-5-11 00:00:00'
+AND a.timestamp <='2024-5-11 23:59:59'
+AND b.id_jenis_olahraga=0
+AND a.id_user=1
+
+//bisa
+dari: 2024-05-10T01:06
+sampai: 2024-05-12T01:07
+
+//tidak bisa
+dari: 2024-05-11T00:00
+sampai: 2024-05-11T23:59
+°C
+
+http://127.0.0.1:3000/insertDataToHeart?hr=101&spo2=95&suhu=40&kode_alat=123456
+https://node-heart.vercel.app/insertDataToHeart?hr=101&spo2=95&suhu=40&kode_alat=123456
+192.168.8.186
+
+15x10 cm
+SELECT MAX(a."+avg+"),c.username,b.tempat,d.nama_olahraga FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN users as c on b.id_user = c.id_user INNER JOIN jenis_olahraga as d on b.id_jenis_olahraga = d.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" ORDER BY id DESC LIMIT 1
+
+HALAMAN USER JANGAN LUPDA DIBERI AVG, MIN, MAX
+
+
+
+
+DASHBOARD
+Banyak olahraga berdasarkan jenis olahraga (grup by nama_olahraga bar)
+Banyak olahraga berdasarkan jenis kelamin (grub by jenis_kelamin pie)
+Banyak olahraga berdasarkan usia (grub by usia bar)
+Banyak olahraga berdasarkan user (grub by nama_user bar)
+
+
+DETAK JANTUNG
+Rata-rata detak jantung berdasarkan olahraga(Grafik bar)
+Rata-rata detak jantung berdasarkan usia(Grafik bar)
+Rata-rata detak jantung berasarkan Jenis Kelamin(grafik pie)
+Detak jantung rata-rata ketika olahraga (angka)
+Detak jantung tertinggi ketika olahraga (angka)
+Detak Jantung Terendah ketika olahraga (angka)
+Hasil Pengukuran (grafik_line)
+Tabel hasil pengukuran 
+
+
+Tingkat Oksigen
+Rata-rata tingkat oksigen berdasarkan olahraga(Grafik bar)
+Rata-rata tingkat oksigen berdasarkan usia(Grafik bar)
+Rata-rata tingkat oksigen berasarkan Jenis Kelamin(grafik pie)
+Tingkat Oksigen rata-rata ketika olahraga (angka)
+Tingkat Oksigen tertinggi ketika olahraga (angka)
+Tingkat Oksigen Terendah ketika olahraga (angka)
+Hasil Pengukuran (grafik_line)
+Tabel hasil pengukuran 
+
+
+Suhu tubuh
+Rata-rata suhu tubuh berdasarkan olahraga(Grafik bar)
+Rata-rata suhu tubuh berdasarkan usia(Grafik bar)
+Rata-rata suhu tubuh berasarkan Jenis Kelamin(grafik pie)
+Tingkat suhu rata-rata ketika olahraga (angka)
+Tingkat suhu tertinggi ketika olahraga (angka)
+Tingkat suhu Terendah ketika olahraga (angka)
+Hasil Pengukuran (grafik_line)
+Tabel hasil pengukuran 
+
+users
+data user
+alat
+data alat
+
+
+
+
+
+
+

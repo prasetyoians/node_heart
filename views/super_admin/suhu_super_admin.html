@@ -1,0 +1,268 @@
+<%- include('header_super_admin.html') %>
+						
+		<div class="main-panel">
+			<div class="content">
+				<div class="panel-header bg-success-gradient">
+					<div class="page-inner py-5">
+						<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+							<div>
+								<h2 class="text-white pb-2 fw-bold">Suhu</h2>
+								<input type="hidden" id="page" value="suhu">
+								<h5 class="text-white op-7 mb-2">Selamat datang <%=session.username %>, Ini adalah hasil statistik dari pengukuran Suhu oleh alat.</h5>
+							</div>
+							<div class="ml-md-auto py-2 py-md-0">
+								<!-- <a href="/mulai_olahraga" class="btn btn-white btn-border btn-round mr-2">Ayo Olahraga!</a> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="page-inner mt--5">
+					<div class="col-md-12">
+						<div class="card full-height">
+							<div class="card-body">
+								<div class="card-title">Filter <i class="fa fa-filter"></i>
+									<div class="form">
+										<div class="row">
+											<div class="col-md-2">
+												<label>Dari:</label>
+												<input type="datetime-local" name="dari" id="dari" class="form-control">
+											</div>
+											<div class="col-md-2">
+												<label>Sampai:</label>
+												<input type="datetime-local" name="sampai" id="sampai" class="form-control">
+											</div>
+											<div class="col-md-3">
+												<label>Jenis Olahraga:</label>
+												<select class="form-control select2" id="id_jenis_olahraga" name="id_jenis_olahraga">
+													<option value="0">Semua Olahraga</option>
+													<%  for(var i = 0; i< jenis_olahraga.length; i++) { %>
+													<option value="<%=jenis_olahraga[i].id_jenis_olahraga%>"><%= jenis_olahraga[i].nama_olahraga%></option>
+										 			<% }  %>
+												</select>
+											</div>
+											<div class="col-md-4">
+												<label>User:</label>
+												<select class="form-control select2" id="id_user" name="id_user">
+													<option value="0">Semua User</option>
+													<%  for(var i = 0; i< users.length; i++) { %>
+													<option value="<%= users[i].id_user%>"><%= users[i].nama%></option>
+										 			<% }  %>
+
+												</select>
+											</div>
+											<div class="col-1">
+												<label>&nbsp</label>
+												<button class="btn btn-success" onclick="refresh_by_filter($('#dari').val(),$('#sampai').val(),$('#id_jenis_olahraga option:selected').val(),$('#id_user option:selected').val() )"><i class="fa fa-search"></i></button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							<div class="card card-stats card-round">
+								<div class="card-header">
+									<h5>Rata-rata Suhu Berdasarkan Jenis Olahraga</h5>
+								</div>
+								<div class="card-body ">
+										
+										<div class="col-md-12">
+											<canvas id="rata_suhu_by_jenis_olahraga"></canvas>
+										</div>
+									
+								</div>
+							</div>
+						</div>
+						<div class=" col-md-4">
+							<div class="card card-stats card-round">
+								<div class="card-header">
+										<h5>Rata-rata Suhu Berdasarkan Usia User</h5>
+								</div>
+								<div class="card-body">
+									
+									<div class="row align-items-center">
+										
+										<div class="col-md-12">
+											<canvas id="rata_suhu_by_usia"></canvas>
+											
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card card-stats card-round">
+								<div class="card-header">
+										<h5>Rata-rata Suhu Berdasarkan Jenis Kelamin</h5>
+								</div>
+								<div class="card-body">
+									<div class="row align-items-center">
+										
+										<div class="col-12">
+											<canvas id="rata_suhu_by_jenis_kelamin" style="height: 100%"></canvas>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+					<!-- end row -->
+					<div class="row">
+						<div class="col-md-8">
+							<div class="card full-height">
+								<div class="card-header">
+									<h2>Hasil Pengukuran Suhu</h2>
+									
+								</div>
+								<div class="card-body">
+									<div class="card-sub">
+										Apabila Filter Kosong Maka Akan Diambilkan Data Hari ini
+									</div>
+									<div class="chart-container">
+										<canvas id="hasil_pengukuran_suhu" style="height: 500px;"></canvas>
+									</div>		
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-4">
+							<div class="col-md-12">
+								<div class="card card-stats card-round">
+									<div class="card-body ">
+										<div class="row align-items-center">
+											<div class="col-icon">
+												<div class="icon-big text-center icon-info bubble-shadow-small">
+													<i class="fas fa-thermometer-empty"></i>
+												</div>
+											</div>
+											<div class="col col-stats">
+												<div class="numbers">
+													<p class="card-category" style="color: black">Total Rata-rata Suhu</p>
+													<h4 class="card-title" id="total_rata_suhu" style="font-weight: bold"></h4>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="card card-stats card-round">
+									<div class="card-body ">
+										<div class="row align-items-center">
+											<div class="col-icon">
+												<div class="icon-big text-center icon-warning bubble-shadow-small">
+													<i class="fas fa-plane-departure"></i>
+												</div>
+											</div>
+											<div class="col col-stats">
+												<div class="numbers">
+													<p class="card-category" style="color: black">Angka Suhu Tertinggi</p>
+														<h4 class="card-title" id="total_max_suhu" style="font-weight: bold"></h4>
+														<div class="card-sub">
+															<p style="font-size: 11px; color: black">User: <span id="user_angka_max_suhu"></span>
+															<br>Saat olahraga: <span id="olahraga_angka_max_suhu"></span>
+															<br>Lokasi: <span id="tempat_angka_max_suhu"></span>
+															<br>Waktu: <span id="waktu_angka_max_suhu"></span>
+														</div>
+
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="card card-stats card-round">
+									<div class="card-body ">
+										<div class="row align-items-center">
+											<div class="col-icon">
+												<div class="icon-big text-center icon-danger bubble-shadow-small">
+													<i class="fas fa-plane-arrival"></i>
+												</div>
+											</div>
+											<div class="col col-stats">
+												<div class="numbers">
+													<p class="card-category" style="color: black">Angka Suhu Terendah</p>
+														<h4 class="card-title" id="total_min_suhu" style="font-weight: bold"></h4>
+														<div class="card-sub" >
+															<p style="font-size: 11px; color: black">User: <span id="user_angka_min_suhu"></span>
+															<br>Saat olahraga: <span id="olahraga_angka_min_suhu"></span>
+															<br>Lokasi: <span id="tempat_angka_min_suhu"></span>
+															<br>Waktu: <span id="waktu_angka_min_suhu"></span>
+														</div>
+
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end row -->
+					
+					<div class="row row-card-no-pd">
+						<div class="col-md-12">
+							<div class="card">
+								<div class="card-header bg-warning-gradient text-white" >
+									<h4 class="card-title text-white" style="margin: 5px;margin-top: 10px;text-align: center;">Tabel Kesluruhan Data Pengukuran</h4>
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="datatable table table-stripped table-borderd" id="datatable_suhu">
+											<thead>
+												<TR>
+													<th>No.</th>
+													<th>User</th>
+													<th>Jenis Kelamin</th>
+													<th>Usia</th>
+													<th>Jenis Olahraga</th>
+													<th>Waktu</th>
+													<th>Tempat</th>
+													<th>Suhu</th>
+												</TR>
+											</thead>
+											<tbody>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					
+				</div>
+			</div>
+			<footer class="footer">
+				<div class="container-fluid">
+					<nav class="pull-left">
+						<ul class="nav">
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									HeartSport Administrator
+								</a>
+							</li>
+							
+							
+						</ul>
+					</nav>
+					<div class="copyright ml-auto">
+						2024, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.themekita.com">Ian Putra</a>
+					</div>				
+				</div>
+			</footer>
+		</div>
+		
+		<!-- Custom template | don't include it in your project! -->
+	
+		<!-- End Custom template -->
+
+            <%- include('footer_super_admin.html') %>
+
