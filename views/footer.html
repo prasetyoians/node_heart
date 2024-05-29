@@ -585,11 +585,10 @@ function refresh_by_filter(dari,sampai,id_jenis_olahraga){
               var array_avg = [];
                   for (var i=0;i<data.length;i++) {
                   
-                  array_avg.push(data[i].avgs.substr(0,5));
-
+                    $("#rata_hr").text(data[i].avgs.substr(0,5)+" BPM");
 
                   }
-                  $("#rata_hr").text(array_avg+" BPM");
+                
 
 
 
@@ -705,12 +704,11 @@ function refresh_by_filter(dari,sampai,id_jenis_olahraga){
               var array_avg = [];
                   for (var i=0;i<data.length;i++) {
                   
-                  array_avg.push(data[i].avgs.substr(0,5));
-
+                
+                    $("#rata_oy").text(data[i].avgs.substr(0,5)+" %");
 
                   }
-                  $("#rata_oxy").text(array_avg+" %");
-
+                
 
 
           }
@@ -823,12 +821,10 @@ function refresh_by_filter(dari,sampai,id_jenis_olahraga){
               var array_avg = [];
                   for (var i=0;i<data.length;i++) {
                   
-                  array_avg.push(data[i].avgs.substr(0,5));
 
+                    $("#rata_suhu").text(data[i].avgs.substr(0,5)+" °C");
 
                   }
-                  $("#rata_suhu").text(array_avg+" °C");
-
 
 
           }
