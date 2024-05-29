@@ -55,6 +55,9 @@ app.get('/akselo', require("./controller/response").akselo);
 app.get('/jadwal', require("./controller/response").jadwal);
 app.get('/register', require("./controller/response").register);
 app.post('/register_form', require("./controller/response").register_form);
+app.get('/maxs', require("./controller/response").maxs);
+app.get('/mins', require("./controller/response").mins);
+app.get('/avgs', require("./controller/response").avgs);
 
 
 

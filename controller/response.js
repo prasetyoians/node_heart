@@ -355,7 +355,7 @@ async function show_table_user_super_admin(req,res){
 var search = req.query.search;
 
 if (search == "") {
-pool.query("SELECT a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_alat FROM users as a INNER JOIN mulai_olahraga as b on a.id_user = b.id_user INNER JOIN heart as c on b.id_mulai_olahraga = c.id_mulai_olahraga INNER JOIN alat as d on a.id_alat = d.id_alat  ORDER BY a.nama ASC", (err, result) => {
+pool.query("SELECT a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_alat FROM users as a INNER JOIN mulai_olahraga as b on a.id_user = b.id_user INNER JOIN heart as c on b.id_mulai_olahraga = c.id_mulai_olahraga INNER JOIN alat as d on a.id_alat = d.id_alat GROUP BY a.id_user,d.kode_alat  ORDER BY a.nama ASC", (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -372,7 +372,7 @@ pool.query("SELECT a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_ala
 
 }else{
 
- pool.query("SELECT a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_alat FROM users as a INNER JOIN mulai_olahraga as b on a.id_user = b.id_user INNER JOIN heart as c on b.id_mulai_olahraga = c.id_mulai_olahraga INNER JOIN alat as d on a.id_alat = d.id_alat WHERE a.nama LIKE '%"+search+"%'  OR a.username LIKE '%"+search+"%' OR d.kode_alat LIKE '%"+search+"%' OR a.jenis_kelamin LIKE '%"+search+"%'      ORDER BY a.nama ASC", (err, result) => {
+ pool.query("SELECT a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_alat FROM users as a INNER JOIN mulai_olahraga as b on a.id_user = b.id_user INNER JOIN heart as c on b.id_mulai_olahraga = c.id_mulai_olahraga INNER JOIN alat as d on a.id_alat = d.id_alat WHERE a.nama LIKE '%"+search+"%'  OR a.username LIKE '%"+search+"%' OR d.kode_alat LIKE '%"+search+"%' OR a.jenis_kelamin LIKE '%"+search+"%'  GROUP BY a.id_user, d.kode_alat    ORDER BY a.nama ASC", (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -397,7 +397,7 @@ async function show_modal_detail_user_super_admin(req,res){
 
 id_user = req.query.id_user;
 
-pool.query("SELECT AVG(c.hr) as avghr,AVG(c.spo2) as avgoxy,AVG(c.suhu)  as avgsuhu,MAX(hr) as maxhr,MAX(spo2) as maxoxy,MAX(suhu) as maxsuhu,MIN(hr) as minhr,MIN(spo2) as minoxy,MIN(suhu) as minsuhu, a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_alat FROM users as a INNER JOIN mulai_olahraga as b on a.id_user = b.id_user INNER JOIN heart as c on b.id_mulai_olahraga = c.id_mulai_olahraga INNER JOIN alat as d on a.id_alat = d.id_alat GROUP BY a.id_user,d.kode_alat ORDER BY a.nama ASC", (err, result) => {
+pool.query("SELECT AVG(c.hr) as avghr,AVG(c.spo2) as avgoxy,AVG(c.suhu)  as avgsuhu,MAX(hr) as maxhr,MAX(spo2) as maxoxy,MAX(suhu) as maxsuhu,MIN(hr) as minhr,MIN(spo2) as minoxy,MIN(suhu) as minsuhu, a.nama,a.username,a.id_user,a.jenis_kelamin,a.usia,d.kode_alat FROM users as a INNER JOIN mulai_olahraga as b on a.id_user = b.id_user INNER JOIN heart as c on b.id_mulai_olahraga = c.id_mulai_olahraga INNER JOIN alat as d on a.id_alat = d.id_alat WHERE a.id_user = "+id_user+" GROUP BY a.id_user,d.kode_alat ORDER BY a.nama ASC", (err, result) => {
   if (err) {
     console.error(err);
     return;
@@ -488,14 +488,16 @@ async function index(req,res){
   const userDataKosong =  { id: null, username: 'Guest' };
   const userData = req.session.user;
 
+  
+let jenis_olahraga = await show_jenis_olahraga();
+
    if (!req.session.user) {
      res.redirect('/login');
    }else{
 
-res.render('views/index',{ currentPath: '/' ,session:userData});
+res.render('views/index',{ currentPath: '/' ,session:userData,jenis_olahraga:jenis_olahraga});
 
    }
-
 
 
 }
@@ -521,11 +523,13 @@ async function mulai_olahraga(req,res){
   const userDataKosong =  { id: null, username: 'Guest' };
   const userData = req.session.user;
 
+let jenis_olahraga = await show_jenis_olahraga();
+
    if (!req.session.user) {
      res.redirect('/login');
    }else{
 
-res.render('views/mulai_olahraga',{ currentPath: '/' ,session:userData});
+res.render('views/mulai_olahraga',{ currentPath: '/' ,session:userData,jenis_olahraga:jenis_olahraga});
 
    }
 
@@ -1873,6 +1877,171 @@ let id_user = req.session.user.id_user;
 }
 
 
+
+async function maxs(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.session.user.id_user;
+let diambil = req.query.diambil;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+var max = "";
+if (diambil == "jantung") {
+  max = "hr";
+}else if (diambil == "oxy") {
+  max = "spo2";
+}else if (diambil == "suhu") {
+  max = "suhu";
+}
+
+pool.query("SELECT a."+max+",c.username,b.tempat,d.nama_olahraga,a.timestamp FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN users as c on b.id_user = c.id_user INNER JOIN jenis_olahraga as d on b.id_jenis_olahraga = d.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" ORDER BY a."+max+" DESC LIMIT 1", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+async function mins(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.session.user.id_user;
+let diambil = req.query.diambil;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+var min = "";
+if (diambil == "jantung") {
+  min = "hr";
+}else if (diambil == "oxy") {
+  min = "spo2";
+}else if (diambil == "suhu") {
+  min = "suhu";
+}
+
+pool.query("SELECT a."+min+",c.username,b.tempat,d.nama_olahraga,a.timestamp FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga INNER JOIN users as c on b.id_user = c.id_user INNER JOIN jenis_olahraga as d on b.id_jenis_olahraga = d.id_jenis_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" ORDER BY a."+min+" ASC LIMIT 1", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+async function avgs(req,res){
+
+
+  var dari = req.query.dari;
+  var sampai = req.query.sampai;
+  var id_jenis_olahraga = req.query.id_jenis_olahraga;
+let id_user = req.session.user.id_user;
+let diambil = req.query.diambil;
+
+
+let queryString="";
+if (id_jenis_olahraga == 0 && id_user == 0) {
+
+  queryString=" ";
+
+}else if(id_jenis_olahraga != 0 && id_user == 0){
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga;
+
+}else if(id_jenis_olahraga == 0 && id_user != 0){
+  queryString=" AND b.id_user="+id_user;
+
+}else{
+  queryString=" AND b.id_jenis_olahraga="+id_jenis_olahraga+" AND b.id_user="+id_user;
+
+}
+
+var avg = "";
+if (diambil == "jantung") {
+  avg = "hr";
+}else if (diambil == "oxy") {
+  avg = "spo2";
+}else if (diambil == "suhu") {
+  avg = "suhu";
+}
+ pool.query("SELECT AVG(a."+avg+") as avgs FROM heart as a INNER JOIN mulai_olahraga as b on a.id_mulai_olahraga = b.id_mulai_olahraga WHERE 1=1 and a.timestamp >='"+dari+"' AND a.timestamp <='"+sampai+"' "+queryString+" ", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+
+}
+
+
+
+
+
 async function hrMax(req,res){
 
   var dari = req.query.dari;
@@ -2398,6 +2567,9 @@ module.exports = {
   show_table_index,
   show_bar_atas,
   total_olahraga,
+  maxs,
+  mins,
+  avgs,
   keaktifan_1,
   keaktifan_2,
   hrMax,

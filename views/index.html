@@ -35,9 +35,10 @@
 												<label>Jenis Olahraga:</label>
 												<select class="form-control" id="id_jenis_olahraga" name="id_jenis_olahraga">
 													<option value="0">Semua Olahraga</option>
-													<option value="1">Jogging</option>
-													<option value="2">Bersepeda</option>
-													<option value="3">Streching</option>
+													
+												<%  for(var i = 0; i< jenis_olahraga.length; i++) { %>
+													<option value="<%=jenis_olahraga[i].id_jenis_olahraga%>"><%= jenis_olahraga[i].nama_olahraga%></option>
+										 			<% }  %>
 												</select>
 											</div>
 											<div class="col-1">
@@ -146,6 +147,158 @@
 									<div class="pull-in sparkline-fix">
 										<div id="lineChart"></div>
 									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							<div class="card card-round">
+								<div class="card-header bg bg-danger text-white">
+									<h4><i class="fas fa-plane-departure"></i> Angka Tertinggi</h4>
+								</div>
+								<div class="card-body">
+									<table class="table table-stripped">
+										<tr>
+											<td style="font-weight: bold;">Detak Jantung</td>
+											<td>:</td>
+											<td>
+												<span class="badge bg-danger text-white" id="max_hr"></span>
+											</td>
+										</tr>
+										<tr style="background-color: rgb(250,100,100,0.1);">
+											<td colspan="3" style="font-size: 11px; text-align: right; ">
+												Data didapat pada <br>
+												Olahraga: <span id="ket_max_hr_olahraga" style="font-weight: bold;font-size: 12px;"></span><br>
+												Waktu: <span id="ket_max_hr_waktu" style="font-weight: bold;font-size: 12px;"></span><br>
+												Tempat: <span id="ket_max_hr_tempat" style="font-weight: bold;font-size: 12px;"></span>
+											</td>
+										</tr>
+										<tr>
+											<td style="font-weight: bold;">Tingkat Oksigen</td>
+											<td>:</td>
+											<td><span class="badge bg-info text-white" id="max_oxy">98%</span></td>
+										</tr>
+										<tr style="background-color: rgb(50,50,250,0.2);">
+											<td colspan="3" style="font-size: 11px; text-align: right; ">
+												Data didapat pada <br>
+												Olahraga: <span id="ket_max_oxy_olahraga" style="font-weight: bold;font-size: 12px;"></span><br>
+												Waktu: <span id="ket_max_oxy_waktu" style="font-weight: bold;font-size: 12px;"></span><br>
+												Tempat: <span id="ket_max_oxy_tempat" style="font-weight: bold;font-size: 12px;"></span>
+											</td>
+										</tr>
+										<tr>
+											<td style="font-weight: bold;">Suhu Tubuh</td>
+											<td>:</td>
+											<td><span class="badge bg-success text-white" id="max_suhu">36C</span></td>
+										</tr>
+										<tr style="background-color: rgb(100,250,100,0.3);">
+											<td colspan="3" style="font-size: 11px; text-align: right; ">
+												Data didapat pada <br>
+												Olahraga: <span id="ket_max_suhu_olahraga" style="font-weight: bold;font-size: 12px;"></span><br>
+												Waktu: <span id="ket_max_suhu_waktu" style="font-weight: bold;font-size: 12px;"></span><br>
+												Tempat: <span id="ket_max_suhu_tempat" style="font-weight: bold;font-size: 12px;"></span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card card-round">
+								<div class="card-header bg bg-info text-white">
+									<h4><i class="fas fa-plane-arrival"></i> Angka Terendah</h4>
+								</div>
+								<div class="card-body">
+									<table class="table table-stripped">
+										<tr>
+											<td style="font-weight: bold;">Detak Jantung</td>
+											<td>:</td>
+											<td>
+												<span class="badge bg-danger text-white" id="min_hr"></span>
+											</td>
+										</tr>
+										<tr style="background-color: rgb(250,100,100,0.1);">
+											<td colspan="3" style="font-size: 11px; text-align: right; ">
+												Data didapat pada <br>
+												Olahraga: <span id="ket_min_hr_olahraga" style="font-weight: bold;font-size: 12px;"></span><br>
+												Waktu: <span id="ket_min_hr_waktu" style="font-weight: bold;font-size: 12px;"></span><br>
+												Tempat: <span id="ket_min_hr_tempat" style="font-weight: bold;font-size: 12px;"></span>
+											</td>
+										</tr>
+										<tr>
+											<td style="font-weight: bold;">Tingkat Oksigen</td>
+											<td>:</td>
+											<td><span class="badge bg-info text-white" id="min_oxy">98%</span></td>
+										</tr>
+										<tr style="background-color: rgb(50,50,250,0.2);">
+											<td colspan="3" style="font-size: 11px; text-align: right; ">
+												Data didapat pada <br>
+												Olahraga: <span id="ket_min_oxy_olahraga" style="font-weight: bold;font-size: 12px;"></span><br>
+												Waktu: <span id="ket_min_oxy_waktu" style="font-weight: bold;font-size: 12px;"></span><br>
+												Tempat: <span id="ket_min_oxy_tempat" style="font-weight: bold;font-size: 12px;"></span>
+											</td>
+										</tr>
+										<tr>
+											<td style="font-weight: bold;">Suhu Tubuh</td>
+											<td>:</td>
+											<td><span class="badge bg-success text-white" id="min_suhu">36C</span></td>
+										</tr>
+										<tr style="background-color: rgb(100,250,100,0.3);">
+											<td colspan="3" style="font-size: 11px; text-align: right; ">
+												Data didapat pada <br>
+												Olahraga: <span id="ket_min_suhu_olahraga" style="font-weight: bold;font-size: 12px;"></span><br>
+												Waktu: <span id="ket_min_suhu_waktu" style="font-weight: bold;font-size: 12px;"></span><br>
+												Tempat: <span id="ket_min_suhu_tempat" style="font-weight: bold;font-size: 12px;"></span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="card card-round">
+								<div class="card-header bg bg-success text-white">
+									<h4><i class="fa fa-flag"></i> Rata-rata</h4>
+								</div>
+								<div class="card-body">
+									<table class="table table-stripped">
+										<tr>
+											<td style="font-weight: bold;">Detak Jantung</td>
+											<td>:</td>
+											<td>
+												<span class="badge bg-danger text-white" id="rata_hr"></span>
+											</td>
+										</tr>
+										<tr style="background-color: rgb(250,100,100,0.1);">
+											<td colspan="3" style="font-size: 12px; text-align: right; ">
+												Data didapat dari keseluruhan data yang difilter oleh tanggal dan jenis olahraga
+											</td>
+										</tr>
+										<tr>
+											<td style="font-weight: bold;">Tingkat Oksigen</td>
+											<td>:</td>
+											<td><span class="badge bg-info text-white" id="rata_oxy"></span></td>
+										</tr>
+										<tr style="background-color: rgb(50,50,250,0.2);">
+											<td colspan="3" style="font-size: 12px; text-align: right; ">
+												
+												Data didapat dari keseluruhan data yang difilter oleh tanggal dan jenis olahraga
+											</td>
+										</tr>
+										<tr>
+											<td style="font-weight: bold;">Suhu Tubuh</td>
+											<td>:</td>
+											<td><span class="badge bg-success text-white" id="rata_suhu"></span></td>
+										</tr>
+										<tr style="background-color: rgb(100,250,100,0.3);">
+											<td colspan="3" style="font-size: 12px; text-align: right; ">
+												
+												Data didapat dari keseluruhan data yang difilter oleh tanggal dan jenis olahraga
+											</td>
+										</tr>
+									</table>
+									<br>
 								</div>
 							</div>
 						</div>

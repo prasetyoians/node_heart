@@ -33,9 +33,9 @@
 												<div class="col-md-6">
 													<label>Jenis Olahraga:</label>
 													<select class="form-control" id="id_jenis_olahraga_mulai_olahraga" name="id_jenis_olahraga_mulai_olahraga">
-														<option value="1">Jogging</option>
-														<option value="2">Bersepeda</option>
-														<option value="3">Streching</option>
+														<%  for(var i = 0; i< jenis_olahraga.length; i++) { %>
+													<option value="<%=jenis_olahraga[i].id_jenis_olahraga%>"><%= jenis_olahraga[i].nama_olahraga%></option>
+										 			<% }  %>
 													</select>
 												</div>
 												

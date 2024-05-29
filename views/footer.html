@@ -43,7 +43,7 @@
 
 //eksekusi document ready ketika page direload
     $('document').ready(function(){
-    refresh_by_filter(0,0,0)
+    refresh_by_filter(0,0,0);
    $("#start_over").hide();
 
    var page = $("#page").val();
@@ -108,6 +108,16 @@ function refresh_by_filter(dari,sampai,id_jenis_olahraga){
     total_olahraga(dari,sampai,id_jenis_olahraga);
     show_table_index(dari,sampai,id_jenis_olahraga);
     table_riwayat_olahraga(dari,sampai,id_jenis_olahraga);
+    max_hr(dari,sampai,id_jenis_olahraga);
+    min_hr(dari,sampai,id_jenis_olahraga);
+    avg_hr(dari,sampai,id_jenis_olahraga);
+    max_oxy(dari,sampai,id_jenis_olahraga);
+    min_oxy(dari,sampai,id_jenis_olahraga);
+    avg_oxy(dari,sampai,id_jenis_olahraga);
+    max_suhu(dari,sampai,id_jenis_olahraga);
+    min_suhu(dari,sampai,id_jenis_olahraga);
+    avg_suhu(dari,sampai,id_jenis_olahraga);
+
 }
 
 
@@ -391,6 +401,52 @@ function refresh_by_filter(dari,sampai,id_jenis_olahraga){
 
 
 
+
+  function show_bar_atas(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+                
+
+    $.ajax({
+          url:"/show_bar_atas?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_heart = [];
+              var array_oxy = [];
+              var array_suhu = [];
+                  var array_time = [];
+
+                   var jml_detak = 0;
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_heart.push(data[i].hr);
+                  array_oxy.push(data[i].spo2);
+                  array_suhu.push(data[i].suhu);
+                  array_time.push(formatTime(data[i].timestamp)+" - "+data[i].nama_olahraga);
+
+
+
+                  }
+                  $("#detak_terakhir").text(array_heart+" BPM");
+                  $("#oxy_terakhir").text(array_oxy+" %");
+                  $("#suhu_terakhir").text(array_suhu+" °C");
+
+
+
+
+          }
+    })
+
+
+  }
+
+
+
   function total_olahraga(dari,sampai,id_jenis_olahraga){
     if(dari == 0 || sampai == 0){
     dari = `${year}-${month}-${day}T00:00`;
@@ -424,6 +480,365 @@ function refresh_by_filter(dari,sampai,id_jenis_olahraga){
 
 
   }
+
+
+  function max_hr(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    diambil = "jantung";
+
+    $.ajax({
+          url:"/maxs?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga+"&diambil="+diambil,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_hr = [];
+              var array_timestamp = [];
+              var array_nama_olahraga = [];
+              var array_tempat = [];
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_hr.push(data[i].hr);
+                  array_tempat.push(data[i].tempat);
+                  array_nama_olahraga.push(data[i].nama_olahraga);
+                  array_timestamp.push(formatDate(data[i].timestamp));
+
+
+
+                  }
+                  $("#max_hr").text(array_hr+" BPM");
+                  $("#ket_max_hr_olahraga").text(array_nama_olahraga);
+                  $("#ket_max_hr_tempat").text(array_tempat);
+                  $("#ket_max_hr_waktu").text(array_timestamp);
+
+
+
+
+          }
+    })
+
+
+  }
+
+
+  function min_hr(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    diambil = "jantung";
+
+    $.ajax({
+          url:"/mins?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga+"&diambil="+diambil,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_hr = [];
+              var array_timestamp = [];
+              var array_nama_olahraga = [];
+              var array_tempat = [];
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_hr.push(data[i].hr);
+                  array_tempat.push(data[i].tempat);
+                  array_nama_olahraga.push(data[i].nama_olahraga);
+                  array_timestamp.push(formatDate(data[i].timestamp));
+
+
+
+                  }
+                  $("#min_hr").text(array_hr+" BPM");
+                  $("#ket_min_hr_olahraga").text(array_nama_olahraga);
+                  $("#ket_min_hr_tempat").text(array_tempat);
+                  $("#ket_min_hr_waktu").text(array_timestamp);
+
+
+
+
+          }
+    })
+
+
+  }
+
+
+  function avg_hr(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    diambil = "jantung";
+
+    $.ajax({
+          url:"/avgs?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga+"&diambil="+diambil,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_avg = [];
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_avg.push(data[i].avgs.substr(0,5));
+
+
+                  }
+                  $("#rata_hr").text(array_avg+" BPM");
+
+
+
+          }
+    })
+
+
+  }
+
+
+
+
+  function max_oxy(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    diambil = "oxy";
+
+    $.ajax({
+          url:"/maxs?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga+"&diambil="+diambil,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_oxy = [];
+              var array_timestamp = [];
+              var array_nama_olahraga = [];
+              var array_tempat = [];
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_oxy.push(data[i].spo2);
+                  array_tempat.push(data[i].tempat);
+                  array_nama_olahraga.push(data[i].nama_olahraga);
+                  array_timestamp.push(formatDate(data[i].timestamp));
+
+
+
+                  }
+                  $("#max_oxy").text(array_oxy+" %");
+                  $("#ket_max_oxy_olahraga").text(array_nama_olahraga);
+                  $("#ket_max_oxy_tempat").text(array_tempat);
+                  $("#ket_max_oxy_waktu").text(array_timestamp);
+
+
+
+
+          }
+    })
+
+
+  }
+
+
+  function min_oxy(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    diambil = "oxy";
+
+    $.ajax({
+          url:"/mins?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga+"&diambil="+diambil,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_oxy = [];
+              var array_timestamp = [];
+              var array_nama_olahraga = [];
+              var array_tempat = [];
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_oxy.push(data[i].spo2);
+                  array_tempat.push(data[i].tempat);
+                  array_nama_olahraga.push(data[i].nama_olahraga);
+                  array_timestamp.push(formatDate(data[i].timestamp));
+
+
+
+                  }
+                  $("#min_oxy").text(array_oxy+" %");
+                  $("#ket_min_oxy_olahraga").text(array_nama_olahraga);
+                  $("#ket_min_oxy_tempat").text(array_tempat);
+                  $("#ket_min_oxy_waktu").text(array_timestamp);
+
+
+
+
+          }
+    })
+
+
+  }
+
+
+  function avg_oxy(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    diambil = "oxy";
+
+    $.ajax({
+          url:"/avgs?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga+"&diambil="+diambil,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_avg = [];
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_avg.push(data[i].avgs.substr(0,5));
+
+
+                  }
+                  $("#rata_oxy").text(array_avg+" %");
+
+
+
+          }
+    })
+
+
+  }
+
+
+
+  function max_suhu(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    diambil = "suhu";
+
+    $.ajax({
+          url:"/maxs?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga+"&diambil="+diambil,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_suhu = [];
+              var array_timestamp = [];
+              var array_nama_olahraga = [];
+              var array_tempat = [];
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_suhu.push(data[i].suhu);
+                  array_tempat.push(data[i].tempat);
+                  array_nama_olahraga.push(data[i].nama_olahraga);
+                  array_timestamp.push(formatDate(data[i].timestamp));
+
+
+
+                  }
+                  $("#max_suhu").text(array_suhu+" °C");
+                  $("#ket_max_suhu_olahraga").text(array_nama_olahraga);
+                  $("#ket_max_suhu_tempat").text(array_tempat);
+                  $("#ket_max_suhu_waktu").text(array_timestamp);
+
+
+
+
+          }
+    })
+
+
+  }
+
+
+  function min_suhu(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    diambil = "suhu";
+
+    $.ajax({
+          url:"/mins?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga+"&diambil="+diambil,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_suhu = [];
+              var array_timestamp = [];
+              var array_nama_olahraga = [];
+              var array_tempat = [];
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_suhu.push(data[i].suhu);
+                  array_tempat.push(data[i].tempat);
+                  array_nama_olahraga.push(data[i].nama_olahraga);
+                  array_timestamp.push(formatDate(data[i].timestamp));
+
+
+
+                  }
+                  $("#min_suhu").text(array_suhu+" °C");
+                  $("#ket_min_suhu_olahraga").text(array_nama_olahraga);
+                  $("#ket_min_suhu_tempat").text(array_tempat);
+                  $("#ket_min_suhu_waktu").text(array_timestamp);
+
+
+
+
+          }
+    })
+
+
+  }
+
+  function avg_suhu(dari,sampai,id_jenis_olahraga){
+    if(dari == 0 || sampai == 0){
+    dari = `${year}-${month}-${day}T00:00`;
+    sampai = `${year}-${month}-${day}T23:59`;
+    }
+
+    diambil = "suhu";
+
+    $.ajax({
+          url:"/avgs?dari="+dari+"&sampai="+sampai+"&id_jenis_olahraga="+id_jenis_olahraga+"&diambil="+diambil,
+          dataType:"JSON",
+          type:"GET",
+          success:function(data){
+
+              var array_avg = [];
+                  for (var i=0;i<data.length;i++) {
+                  
+                  array_avg.push(data[i].avgs.substr(0,5));
+
+
+                  }
+                  $("#rata_suhu").text(array_avg+" °C");
+
+
+
+          }
+    })
+
+
+  }
+
+
+
 
 
 function show_table_index(dari,sampai,id_jenis_olahraga){

@@ -1828,7 +1828,7 @@ function show_modal_detail_user_super_admin(id_user){
 
   $("#modal_detail_user").show(1000);
             $.ajax({  
-                url:"/show_modal_detail_user_super_admin?id_user"+id_user,
+                url:"/show_modal_detail_user_super_admin?id_user="+id_user,
                 dataType:"JSON",
                 type:"GET",
                 success:function(data){
