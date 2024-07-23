@@ -1809,8 +1809,8 @@ var search = $("#search_user").val();
                                 <button class='btn btn-info btn-sm m-1' onclick='show_modal_detail_user_super_admin(`+data[i].id_user+`)'><i class='fa fa-eye'></i></button>
                                  `;
                         a += `<td>
-                                <button class='btn btn-warning btn-sm m-1' onclick='edit_user(`+data[i].id_user+`)'><i class='fa fa-edit'></i></button>
-                                 <button class='btn btn-danger btn-sm m-1' onclick='hapus_user(`+data[i].id_user+`)'><i class='fa fa-trash-alt'></i></button>
+                                <button class='btn btn-warning btn-sm m-1' onclick='edit_user_super_admin(`+data[i].id_user+`)'><i class='fa fa-edit'></i></button>
+                                 <button class='btn btn-danger btn-sm m-1' onclick='delete_user_super_admin(`+data[i].id_user+`)'><i class='fa fa-trash-alt'></i></button>
                               </td>`;
                         a += `<tr>`;
                         }
@@ -1863,6 +1863,100 @@ function show_modal_detail_user_super_admin(id_user){
 }
 
 
+function edit_user_super_admin(id_user){
+            $.ajax({  
+                url:"/edit_user_super_admin?id_user="+id_user,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                    var a = "";
+  $("#modal_edit_user").show(1000);
+
+                    for (var i = 0; i < data.length; i++) {
+                        $("#username").val(data[i].username);
+                        $("#nama").val(data[i].nama);
+                        $("#usia").val(data[i].usia);
+                        $("#jenis_kelamin").val(data[i].jenis_kelamin);
+                        $("#id_alat").val(data[i].id_alat);
+                        $("#id_user").val(data[i].id_user);
+
+                        }
+
+
+
+                       //setTimeout(reload, 1000);
+                }
+            })
+}
+
+
+function update_user_super_admin(){
+  var id_user = $("#id_user").val();
+  var nama = $("#nama").val();
+  var username = $("#username").val();
+  var usia = $("#usia").val();
+  var jenis_kelamin = $("#jenis_kelamin option:selected").val();
+  var id_alat = $("#id_alat option:selected").val();
+
+  $.ajax({
+      url:"/update_user_super_admin?id_user="+id_user+"&nama="+nama+"&username="+username+"&usia="+usia+"&jenis_kelamin="+jenis_kelamin+"&id_alat="+id_alat,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                swal({
+                    title: "Berhasil!",
+                    text: "Edit data berhasil!",
+                    icon: "success"
+                  });
+
+                close_modal_edit_user();
+                show_table_user_super_admin();
+                }
+  });
+}
+
+function delete_user_super_admin(id_user){
+
+  swal({
+            title: 'Apakah anda yakin untuk mengapus?',
+            text: "user tidak akan bisa dikembalikan",
+            type: 'warning',
+            buttons:{
+              confirm: {
+                text : 'Yes, delete it!',
+                className : 'btn btn-success'
+              },
+              cancel: {
+                visible: true,
+                className: 'btn btn-danger'
+              }
+            }
+          }).then((Delete) => {
+            if (Delete) {
+              $.ajax({
+            url:"/delete_user_super_admin?id_user="+id_user,
+                      dataType:"JSON",
+                      type:"GET",
+                      success:function(data){
+                      swal({
+                          title: "Berhasil!",
+                          text: "Delete data berhasil!",
+                          icon: "success"
+                        });
+
+                      show_table_user_super_admin();
+                      }
+        });
+
+            
+            } else {
+              swal.close();
+            }
+          });
+
+
+
+}
 
 
 //end admin user
@@ -2667,6 +2761,13 @@ function close_modal_info_user(){
   $("#modal_detail_user").hide(1000);
 
 }
+
+
+function close_modal_edit_user(){
+  $("#modal_edit_user").hide(1000);
+
+}
+
 
 function close_modal(){
   $("#modal_riwayat_olahraga").hide(1000);

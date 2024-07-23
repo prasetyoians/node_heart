@@ -16,6 +16,7 @@ sampai: 2024-05-11T23:59
 
 http://127.0.0.1:3000/insertDataToHeart?hr=101&spo2=95&suhu=40&kode_alat=123456
 https://node-heart.vercel.app/insertDataToHeart?hr=101&spo2=95&suhu=40&kode_alat=123456
+
 192.168.8.186
 
 15x10 cm

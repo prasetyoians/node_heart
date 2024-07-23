@@ -4,6 +4,7 @@ const pool = require('../koneksi_db/koneksi');
 const http = require('http');
 
 var url = require('url');
+const crypto = require('crypto');
 
 const jwt = require('jsonwebtoken');
 const secretKey = "yourSecretKey"; // Ganti dengan kunci rahasia yang kuat
@@ -124,7 +125,8 @@ async function logout_super_admin(req,res){
 
 async function login_form(req,res){
   const username = req.body.username;
-  const password = req.body.password;
+  var password = req.body.password;
+ password = crypto.createHash('md5').update(password).digest('hex');
 
 console.log("username: "+username);
 console.log("pass: "+password);
@@ -282,11 +284,13 @@ async function cek_user_ada(username){
 
 async function register_form(req,res){
  const username = req.body.username;
-  const password = req.body.password;
+  var password = req.body.password;
   const nama = req.body.nama;
   const usia = req.body.usia;
   const jenis_kelamin = req.body.jenis_kelamin;
   const id_alat = req.body.id_alat;
+
+var password = crypto.createHash('md5').update(password).digest('hex');
 
 
 const insertQuery = 'INSERT INTO users(username, password,nama,usia,jenis_kelamin,id_alat) VALUES($1,$2,$3,$4,$5,$6) RETURNING *';
@@ -336,14 +340,13 @@ async function user_super_admin(req,res){
   const userData = req.session.super_admin;
 
 
-let jenis_olahraga = await show_jenis_olahraga();
-let users = await show_users();
+let kode_alat = await show_kode_alat();
 
    if (!req.session.super_admin) {
      res.redirect('/login_super_admin');
    }else{
 
-res.render('views/super_admin/user_super_admin',{ currentPath: '/' ,session:userData,jenis_olahraga:jenis_olahraga,users:users});
+res.render('views/super_admin/user_super_admin',{ currentPath: '/' ,session:userData,kode_alat:kode_alat});
 
    }
 
@@ -412,11 +415,69 @@ pool.query("SELECT AVG(c.hr) as avghr,AVG(c.spo2) as avgoxy,AVG(c.suhu)  as avgs
 
 });
 
+}
 
 
- 
+
+async function edit_user_super_admin(req,res){
+
+id_user = req.query.id_user;
+
+pool.query("SELECT * FROM users WHERE id_user="+id_user, (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
 
 }
+
+
+async function update_user_super_admin(req, res) {
+  const id_user = req.query.id_user;
+  const nama = req.query.nama;
+  const username = req.query.username;
+  const usia = req.query.usia;
+  const jenis_kelamin = req.query.jenis_kelamin;
+  const id_alat = req.query.id_alat;
+
+  const updateQuery = "UPDATE users SET nama ='"+nama+"',username ='"+username+"',usia ='"+usia+"',jenis_kelamin ='"+jenis_kelamin+"',id_alat ="+id_alat+" WHERE id_user = "+id_user;
+
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Sukses" });
+  } catch (error) {
+    console.error("Gagal ", error);
+    res.status(500).json({ message: "Gagal " });
+  }
+}
+
+
+
+async function delete_user_super_admin(req, res) {
+  const id_user = req.query.id_user;
+
+  const updateQuery = "DELETE FROM users WHERE id_user="+id_user;
+
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Sukses" });
+  } catch (error) {
+    console.error("Gagal ", error);
+    res.status(500).json({ message: "Gagal " });
+  }
+}
+
 
 
 async function jantung_super_admin(req,res){
@@ -2620,4 +2681,7 @@ module.exports = {
   user_super_admin,
   show_table_user_super_admin,
   show_modal_detail_user_super_admin,
+  edit_user_super_admin,
+  update_user_super_admin,
+  delete_user_super_admin,
 };

@@ -11,6 +11,8 @@ const ejs = require('ejs');
 
 
 const session = require('cookie-session');
+const crypto = require('crypto');
+
 // const cors = require('cors');
 
 // app.use(cors());
@@ -143,6 +145,9 @@ app.get('/suhu_super_admin', require("./controller/response").suhu_super_admin);
 app.get('/user_super_admin', require("./controller/response").user_super_admin);
 app.get('/show_table_user_super_admin', require("./controller/response").show_table_user_super_admin);
 app.get('/show_modal_detail_user_super_admin', require("./controller/response").show_modal_detail_user_super_admin);
+app.get('/edit_user_super_admin', require("./controller/response").edit_user_super_admin);
+app.get('/update_user_super_admin', require("./controller/response").update_user_super_admin);
+app.get('/delete_user_super_admin', require("./controller/response").delete_user_super_admin);
 
 
 
