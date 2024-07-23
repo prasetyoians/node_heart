@@ -336,7 +336,7 @@ res.render('views/super_admin/index_super_admin',{ currentPath: '/' ,session:use
 
 
 
-
+//users
 async function user_super_admin(req,res){
   const userDataKosong =  { id: null, username: 'Guest' };
   const userData = req.session.super_admin;
@@ -355,6 +355,8 @@ res.render('views/super_admin/user_super_admin',{ currentPath: '/' ,session:user
 
 
 }
+
+
 
 async function show_table_user_super_admin(req,res){
 var search = req.query.search;
@@ -480,6 +482,286 @@ async function delete_user_super_admin(req, res) {
   }
 }
 
+
+//end user
+
+//alat
+
+async function alat_super_admin(req,res){
+  const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.super_admin;
+
+
+
+   if (!req.session.super_admin) {
+     res.redirect('/login_super_admin');
+   }else{
+
+res.render('views/super_admin/alat_super_admin',{ currentPath: '/' ,session:userData});
+
+   }
+
+
+
+}
+
+
+
+async function show_table_alat_super_admin(req,res){
+var search = req.query.search;
+
+if (search == "") {
+pool.query("SELECT * FROM alat ORDER BY id_alat ASC", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+}else{
+
+ pool.query("SELECT * FROM alat WHERE kode_alat LIKE '%"+search+"%'  OR nama_alat LIKE '%"+search+"%'   ORDER BY id_alat ASC", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+}
+
+ 
+
+}
+
+async function edit_alat_super_admin(req,res){
+
+id_alat = req.query.id_alat;
+
+pool.query("SELECT * FROM alat WHERE id_alat="+id_alat, (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+}
+
+
+
+async function tambah_alat_super_admin(req, res) {
+
+  const kode_alat = req.query.kode_alat;
+  const nama_alat = req.query.nama_alat;
+
+  const updateQuery = "INSERT INTO alat (nama_alat,kode_alat) VALUES ('"+nama_alat+"','"+kode_alat+"')";
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Sukses" });
+  } catch (error) {
+    console.error("Gagal ", error);
+    res.status(500).json({ message: "Gagal " });
+  }
+}
+
+async function update_alat_super_admin(req, res) {
+  const id_alat = req.query.id_alat;
+  const kode_alat = req.query.kode_alat;
+  const nama_alat = req.query.nama_alat;
+
+  const updateQuery = "UPDATE alat SET kode_alat ='"+kode_alat+"',nama_alat ='"+nama_alat+"' WHERE id_alat = "+id_alat;
+
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Sukses" });
+  } catch (error) {
+    console.error("Gagal ", error);
+    res.status(500).json({ message: "Gagal " });
+  }
+}
+
+
+
+async function delete_alat_super_admin(req, res) {
+  const id_alat = req.query.id_alat;
+
+  const updateQuery = "DELETE FROM alat WHERE id_alat="+id_alat;
+
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Sukses" });
+  } catch (error) {
+    console.error("Gagal ", error);
+    res.status(500).json({ message: "Gagal " });
+  }
+}
+
+
+//end alat
+
+//admin jenis olahraga
+
+
+async function jenis_olahraga_super_admin(req,res){
+  const userDataKosong =  { id: null, username: 'Guest' };
+  const userData = req.session.super_admin;
+
+
+
+   if (!req.session.super_admin) {
+     res.redirect('/login_super_admin');
+   }else{
+
+res.render('views/super_admin/jenis_olahraga_super_admin',{ currentPath: '/' ,session:userData});
+
+   }
+
+
+
+}
+
+
+
+async function show_table_jenis_olahraga_super_admin(req,res){
+var search = req.query.search;
+
+if (search == "") {
+pool.query("SELECT * FROM jenis_olahraga ORDER BY id_jenis_olahraga ASC", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+}else{
+
+ pool.query("SELECT * FROM jenis_olahraga WHERE keterangan LIKE '%"+search+"%'  OR nama_olahraga LIKE '%"+search+"%'   ORDER BY id_jenis_olahraga ASC", (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+}
+
+ 
+
+}
+
+async function edit_jenis_olahraga_super_admin(req,res){
+
+id_jenis_olahraga = req.query.id_jenis_olahraga;
+
+pool.query("SELECT * FROM jenis_olahraga WHERE id_jenis_olahraga="+id_jenis_olahraga, (err, result) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const data = result.rows;
+  // Pass data to your HTML rendering function
+  
+
+  res.status(200).json(data);
+
+
+
+});
+
+}
+
+
+
+async function tambah_jenis_olahraga_super_admin(req, res) {
+
+  const keterangan = req.query.keterangan;
+  const nama_olahraga = req.query.nama_olahraga;
+
+  const updateQuery = "INSERT INTO jenis_olahraga (nama_olahraga,keterangan) VALUES ('"+nama_olahraga+"','"+keterangan+"')";
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Sukses" });
+  } catch (error) {
+    console.error("Gagal ", error);
+    res.status(500).json({ message: "Gagal " });
+  }
+}
+
+async function update_jenis_olahraga_super_admin(req, res) {
+  const id_jenis_olahraga = req.query.id_jenis_olahraga;
+  const keterangan = req.query.keterangan;
+  const nama_olahraga = req.query.nama_olahraga;
+
+  const updateQuery = "UPDATE jenis_olahraga SET keterangan ='"+keterangan+"',nama_olahraga ='"+nama_olahraga+"' WHERE id_jenis_olahraga = "+id_jenis_olahraga;
+
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Sukses" });
+  } catch (error) {
+    console.error("Gagal ", error);
+    res.status(500).json({ message: "Gagal " });
+  }
+}
+
+
+
+async function delete_jenis_olahraga_super_admin(req, res) {
+  const id_jenis_olahraga = req.query.id_jenis_olahraga;
+
+  const updateQuery = "DELETE FROM jenis_olahraga WHERE id_jenis_olahraga="+id_jenis_olahraga;
+
+  console.log(updateQuery);
+  try {
+    await pool.query(updateQuery);
+    res.status(200).json({ message: "Sukses" });
+  } catch (error) {
+    console.error("Gagal ", error);
+    res.status(500).json({ message: "Gagal " });
+  }
+}
+
+//end jenis olahraga
 
 
 async function jantung_super_admin(req,res){
@@ -2686,4 +2968,16 @@ module.exports = {
   edit_user_super_admin,
   update_user_super_admin,
   delete_user_super_admin,
+  alat_super_admin,
+  show_table_alat_super_admin,
+  edit_alat_super_admin,
+  tambah_alat_super_admin,
+  update_alat_super_admin,
+  delete_alat_super_admin,
+  jenis_olahraga_super_admin,
+  show_table_jenis_olahraga_super_admin,
+  edit_jenis_olahraga_super_admin,
+  tambah_jenis_olahraga_super_admin,
+  update_jenis_olahraga_super_admin,
+  delete_jenis_olahraga_super_admin,
 };

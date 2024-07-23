@@ -177,8 +177,16 @@ function refresh_by_filter(dari,sampai,id_jenis_olahraga,id_user){
     show_max_suhu(dari,sampai,id_jenis_olahraga,id_user);
     show_min_suhu(dari,sampai,id_jenis_olahraga,id_user);
     show_table_admin_suhu(dari,sampai,id_jenis_olahraga,id_user);
+
     }else if(page == "user"){
       show_table_user_super_admin();
+
+    }else if(page == "alat"){
+      show_table_alat_super_admin();
+      
+    }else if(page == "jenis_olahraga"){
+      show_table_jenis_olahraga_super_admin();
+      
     }
 
 }
@@ -1961,6 +1969,297 @@ function delete_user_super_admin(id_user){
 
 //end admin user
 
+//admin alat
+
+
+function show_table_alat_super_admin(){
+
+var search = $("#search_alat").val();
+            $.ajax({  
+                url:"/show_table_alat_super_admin?search="+search,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                    var a = "";
+
+                    for (var i = 0; i < data.length; i++) {
+                        a += `<tr>`;
+                        a += `<td>`+ parseInt(i+1) +`</td>`;
+                        a += `<td>`+data[i].kode_alat+`</td>`;
+                        a += `<td>`+data[i].nama_alat+`</td>`;
+                        
+                        a += `<td>
+                                <button class='btn btn-warning btn-sm m-1' onclick='edit_alat_super_admin(`+data[i].id_alat+`)'><i class='fa fa-edit'></i></button>
+                                 <button class='btn btn-danger btn-sm m-1' onclick='delete_alat_super_admin(`+data[i].id_alat+`)'><i class='fa fa-trash-alt'></i></button>
+                              </td>`;
+                        a += `<tr>`;
+                        }
+
+                        $("#datatable_alat tbody").html(a);
+
+
+                       //setTimeout(reload, 1000);
+                }
+            })
+}
+
+
+function add_alat(){
+  $("#modal_edit_alat").show(1000);
+  $("#tipe").val(1);
+  $("#kode_alat").val('');
+  $("#nama_alat").val('');
+  $("#id_alat").val('');
+}
+
+function edit_alat_super_admin(id_alat){
+            $.ajax({  
+                url:"/edit_alat_super_admin?id_alat="+id_alat,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                    var a = "";
+  $("#modal_edit_alat").show(1000);
+  $("#tipe").val(2);
+
+
+                    for (var i = 0; i < data.length; i++) {
+                        $("#kode_alat").val(data[i].kode_alat);
+                        $("#nama_alat").val(data[i].nama_alat);
+                      
+                        $("#id_alat").val(data[i].id_alat);
+
+                        }
+
+
+
+                       //setTimeout(reload, 1000);
+                }
+            })
+}
+
+
+function update_alat_super_admin(){
+  var id_alat = $("#id_alat").val();
+  var kode_alat = $("#kode_alat").val();
+  var nama_alat = $("#nama_alat").val();
+  var tipe = $("#tipe").val();
+
+  if (tipe == 1) {
+    var urls = "/tambah_alat_super_admin?&kode_alat="+kode_alat+"&nama_alat="+nama_alat;
+  }else{
+    var urls = "/update_alat_super_admin?id_alat="+id_alat+"&kode_alat="+kode_alat+"&nama_alat="+nama_alat;
+
+  }
+
+  $.ajax({
+      url:urls,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                swal({
+                    title: "Berhasil!",
+                    text: "Edit data berhasil!",
+                    icon: "success"
+                  });
+
+                close_modal_edit_alat();
+                show_table_alat_super_admin();
+                }
+  });
+}
+
+function delete_alat_super_admin(id_alat){
+
+  swal({
+            title: 'Apakah anda yakin untuk mengapus?',
+            text: "alat tidak akan bisa dikembalikan",
+            type: 'warning',
+            buttons:{
+              confirm: {
+                text : 'Yes, delete it!',
+                className : 'btn btn-success'
+              },
+              cancel: {
+                visible: true,
+                className: 'btn btn-danger'
+              }
+            }
+          }).then((Delete) => {
+            if (Delete) {
+              $.ajax({
+            url:"/delete_alat_super_admin?id_alat="+id_alat,
+                      dataType:"JSON",
+                      type:"GET",
+                      success:function(data){
+                      swal({
+                          title: "Berhasil!",
+                          text: "Delete data berhasil!",
+                          icon: "success"
+                        });
+
+                      show_table_alat_super_admin();
+                      }
+        });
+
+            
+            } else {
+              swal.close();
+            }
+          });
+
+
+
+}
+
+//end admin alat
+
+//admin jenis olahraga
+
+
+function show_table_jenis_olahraga_super_admin(){
+
+var search = $("#search_jenis_olahraga").val();
+            $.ajax({  
+                url:"/show_table_jenis_olahraga_super_admin?search="+search,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                    var a = "";
+
+                    for (var i = 0; i < data.length; i++) {
+                        a += `<tr>`;
+                        a += `<td>`+ parseInt(i+1) +`</td>`;
+                        a += `<td>`+data[i].nama_olahraga+`</td>`;
+                        a += `<td>`+data[i].keterangan+`</td>`;
+                        
+                        a += `<td>
+                                <button class='btn btn-warning btn-sm m-1' onclick='edit_jenis_olahraga_super_admin(`+data[i].id_jenis_olahraga+`)'><i class='fa fa-edit'></i></button>
+                                 <button class='btn btn-danger btn-sm m-1' onclick='delete_jenis_olahraga_super_admin(`+data[i].id_jenis_olahraga+`)'><i class='fa fa-trash-alt'></i></button>
+                              </td>`;
+                        a += `<tr>`;
+                        }
+
+                        $("#datatable_jenis_olahraga tbody").html(a);
+
+
+                       //setTimeout(reload, 1000);
+                }
+            })
+}
+
+
+function add_jenis_olahraga(){
+  $("#modal_edit_jenis_olahraga").show(1000);
+  $("#tipe").val(1);
+  $("#keterangan").val('');
+  $("#nama_olahraga").val('');
+  $("#id_jenis_olahraga").val('');
+}
+
+function edit_jenis_olahraga_super_admin(id_jenis_olahraga){
+            $.ajax({  
+                url:"/edit_jenis_olahraga_super_admin?id_jenis_olahraga="+id_jenis_olahraga,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                    var a = "";
+  $("#modal_edit_jenis_olahraga").show(1000);
+  $("#tipe").val(2);
+
+
+                    for (var i = 0; i < data.length; i++) {
+                        $("#keterangan").val(data[i].keterangan);
+                        $("#nama_olahraga").val(data[i].nama_olahraga);
+                      
+                        $("#id_jenis_olahraga").val(data[i].id_jenis_olahraga);
+
+                        }
+
+
+
+                       //setTimeout(reload, 1000);
+                }
+            })
+}
+
+
+function update_jenis_olahraga_super_admin(){
+  var id_jenis_olahraga = $("#id_jenis_olahraga").val();
+  var keterangan = $("#keterangan").val();
+  var nama_olahraga = $("#nama_olahraga").val();
+  var tipe = $("#tipe").val();
+
+  if (tipe == 1) {
+    var urls = "/tambah_jenis_olahraga_super_admin?&keterangan="+keterangan+"&nama_olahraga="+nama_olahraga;
+  }else{
+    var urls = "/update_jenis_olahraga_super_admin?id_jenis_olahraga="+id_jenis_olahraga+"&keterangan="+keterangan+"&nama_olahraga="+nama_olahraga;
+
+  }
+
+  $.ajax({
+      url:urls,
+                dataType:"JSON",
+                type:"GET",
+                success:function(data){
+                swal({
+                    title: "Berhasil!",
+                    text: "Edit data berhasil!",
+                    icon: "success"
+                  });
+
+                close_modal_edit_jenis_olahraga();
+                show_table_jenis_olahraga_super_admin();
+                }
+  });
+}
+
+function delete_jenis_olahraga_super_admin(id_jenis_olahraga){
+
+  swal({
+            title: 'Apakah anda yakin untuk mengapus?',
+            text: "jenis_olahraga tidak akan bisa dikembalikan",
+            type: 'warning',
+            buttons:{
+              confirm: {
+                text : 'Yes, delete it!',
+                className : 'btn btn-success'
+              },
+              cancel: {
+                visible: true,
+                className: 'btn btn-danger'
+              }
+            }
+          }).then((Delete) => {
+            if (Delete) {
+              $.ajax({
+            url:"/delete_jenis_olahraga_super_admin?id_jenis_olahraga="+id_jenis_olahraga,
+                      dataType:"JSON",
+                      type:"GET",
+                      success:function(data){
+                      swal({
+                          title: "Berhasil!",
+                          text: "Delete data berhasil!",
+                          icon: "success"
+                        });
+
+                      show_table_jenis_olahraga_super_admin();
+                      }
+        });
+
+            
+            } else {
+              swal.close();
+            }
+          });
+
+
+
+}
+
+//end admin jenis olahraga
+
+
   function show_grafik_detak_oxy(dari,sampai,id_jenis_olahraga){
     if(dari == 0 || sampai == 0){
     dari = `${year}-${month}-${day}T00:00`;
@@ -2767,6 +3066,19 @@ function close_modal_edit_user(){
   $("#modal_edit_user").hide(1000);
 
 }
+
+
+function close_modal_edit_alat(){
+  $("#modal_edit_alat").hide(1000);
+
+}
+
+
+function close_modal_edit_jenis_olahraga(){
+  $("#modal_edit_jenis_olahraga").hide(1000);
+
+}
+
 
 
 function close_modal(){

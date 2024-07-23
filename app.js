@@ -142,12 +142,32 @@ app.get('/show_table_admin', require("./controller/response").show_table_admin);
 
 app.get('/oxy_super_admin', require("./controller/response").oxy_super_admin);
 app.get('/suhu_super_admin', require("./controller/response").suhu_super_admin);
+
+
 app.get('/user_super_admin', require("./controller/response").user_super_admin);
 app.get('/show_table_user_super_admin', require("./controller/response").show_table_user_super_admin);
 app.get('/show_modal_detail_user_super_admin', require("./controller/response").show_modal_detail_user_super_admin);
 app.get('/edit_user_super_admin', require("./controller/response").edit_user_super_admin);
 app.get('/update_user_super_admin', require("./controller/response").update_user_super_admin);
 app.get('/delete_user_super_admin', require("./controller/response").delete_user_super_admin);
+
+
+
+app.get('/alat_super_admin', require("./controller/response").alat_super_admin);
+app.get('/show_table_alat_super_admin', require("./controller/response").show_table_alat_super_admin);
+app.get('/edit_alat_super_admin', require("./controller/response").edit_alat_super_admin);
+app.get('/tambah_alat_super_admin', require("./controller/response").tambah_alat_super_admin);
+app.get('/update_alat_super_admin', require("./controller/response").update_alat_super_admin);
+app.get('/delete_alat_super_admin', require("./controller/response").delete_alat_super_admin);
+
+
+
+app.get('/jenis_olahraga_super_admin', require("./controller/response").jenis_olahraga_super_admin);
+app.get('/show_table_jenis_olahraga_super_admin', require("./controller/response").show_table_jenis_olahraga_super_admin);
+app.get('/edit_jenis_olahraga_super_admin', require("./controller/response").edit_jenis_olahraga_super_admin);
+app.get('/tambah_jenis_olahraga_super_admin', require("./controller/response").tambah_jenis_olahraga_super_admin);
+app.get('/update_jenis_olahraga_super_admin', require("./controller/response").update_jenis_olahraga_super_admin);
+app.get('/delete_jenis_olahraga_super_admin', require("./controller/response").delete_jenis_olahraga_super_admin);
 
 
 

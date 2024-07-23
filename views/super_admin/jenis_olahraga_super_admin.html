@@ -1,0 +1,143 @@
+<%- include('header_super_admin.html') %>
+		
+		<style type="text/css">
+			#table_info tr td{
+				border: 1px solid black;
+			}
+			#table_info th{
+				border: 1px solid black;
+
+			}
+			
+		</style>				
+		<div class="main-panel">
+			<div class="content">
+				<div class="panel-header bg-success-gradient">
+					<div class="page-inner py-5">
+						<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+							<div>
+								<h2 class="text-white pb-2 fw-bold">Data Jenis Olahraga</h2>
+								<input type="hidden" id="page" value="jenis_olahraga">
+								<h5 class="text-white op-7 mb-2">Selamat datang <%=session.username %>, Ini adalah Data jenis olahraga yang telah diproduksi</h5>
+							</div>
+							<div class="ml-md-auto py-2 py-md-0">
+								<!-- <a href="/mulai_olahraga" class="btn btn-white btn-border btn-round mr-2">Ayo Olahraga!</a> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="page-inner mt--5">
+					
+					<!-- end row -->
+					
+					<div class="row row-card-no-pd">
+						<div class="col-md-12">
+							<div class="card">
+								<div class="card-header bg-warning-gradient text-white" >
+									<h4 class="card-title text-white" style="margin: 5px;margin-top: 10px;text-align: center;">Data Jenis Olahraga</h4>
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<div class="row">
+											
+											<div class="col-md-8 justify-content-right mb-3" style="float: left;">
+												<button class="btn btn-success" onclick="add_jenis_olahraga()"><i class="fa fa-plus">Tambah</i></button>
+											</div>
+											<div class="col-md-4 justify-content-right mb-3" style="float: right;">
+												<input type="text" name="search_jenis_olahraga" id="search_jenis_olahraga" onkeyup="show_table_jenis_olahraga_super_admin()" class="form-control" placeholder="Cari jenis olahraga..." style="text-align: right;">
+											
+											</div>
+											
+										</div>
+										
+										<table class="datatable table table-stripped table-borderd" id="datatable_jenis_olahraga">
+											<thead>
+												<TR>
+													<th>No.</th>
+													<th>Nama jenis olahraga</th>
+													<th>keterangan</th>
+													<th>Aksi</th>
+												</TR>
+											</thead>
+											<tbody>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					
+				</div>
+			</div>
+
+
+<div class="modal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" id="modal_edit_jenis_olahraga" style="background-color: rgba(100,100,100,0.5);">
+  <div class="modal-dialog" role="document"  id="modal_dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Data jenis_olahraga</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="close_modal_edit_jenis_olahraga()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<div class="form">
+      		<input type="hidden" name="id_jenis_olahraga" id="id_jenis_olahraga">
+      		<input type="hidden" name="tipe" id="tipe">
+      		
+
+			
+      		<div class="col-md-12">
+      			<label>Nama jenis_olahraga</label>
+      			<input type="text" name="nama_olahraga" id="nama_olahraga" class="form-control">
+      		</div>
+      		<br>
+
+      		<div class="col-md-12">
+      			<label>Keterangan</label>
+      			<input type="text" name="keterangan" id="keterangan" class="form-control">
+      		</div>
+      		<br>
+
+      		
+
+      	</div>
+      </div>
+      <div class="modal-footer">
+      	 <button type="button" class="btn btn-success" onclick="update_jenis_olahraga_super_admin()">Simpan</button>
+        <button  type="button" class="btn btn-secondary" data-dismiss="modal" onclick="close_modal_edit_jenis_olahraga()">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+			<footer class="footer">
+				<div class="container-fluid">
+					<nav class="pull-left">
+						<ul class="nav">
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									HeartSport Administrator
+								</a>
+							</li>
+							
+							
+						</ul>
+					</nav>
+					<div class="copyright ml-auto">
+						2024, made with <i class="fa fa-heart heart text-danger"></i> by <a href="https://www.themekita.com">Ian Putra</a>
+					</div>				
+				</div>
+			</footer>
+		</div>
+		
+		<!-- Custom template | don't include it in your project! -->
+	
+		<!-- End Custom template -->
+
+            <%- include('footer_super_admin.html') %>
+
