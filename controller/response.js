@@ -248,7 +248,9 @@ async function save_profil(req,res){
 let id_user = req.session.user.id_user;
 
  const username = req.body.username;
-  const password = req.body.password;
+  var password = req.body.password;
+ password = crypto.createHash('md5').update(password).digest('hex');
+
   const nama = req.body.nama;
   const usia = req.body.usia;
   const jenis_kelamin = req.body.jenis_kelamin;
