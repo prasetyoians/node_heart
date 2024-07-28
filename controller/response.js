@@ -960,7 +960,7 @@ async function insertDataToHeart(req,res){
   var suhu = req.query.suhu;
   var kode_alat = req.query.kode_alat;
 
-  suhu  = prasetInt(suhu) - 3;
+  suhu  = parseInt(suhu) - 3;
 
 
 var id_user = await cari_user_by_kode_alat(kode_alat);
