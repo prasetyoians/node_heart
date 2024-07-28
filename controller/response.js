@@ -960,13 +960,17 @@ async function insertDataToHeart(req,res){
   var suhu = req.query.suhu;
   var kode_alat = req.query.kode_alat;
 
+  suhu  = prasetInt(suhu) - 3;
+
 
 var id_user = await cari_user_by_kode_alat(kode_alat);
 var id_mulai_olahraga = await cari_id_mulai_olahraga_terakhir_by_id_user(id_user);
 
 var status = await cek_status_mulai_olahraga(id_mulai_olahraga);
 
+
 if (status == "Dimulai") {
+
 
 
 const json = {
@@ -975,6 +979,7 @@ const json = {
       "suhu": suhu,
       "id_user": id_user,
       "id_mulai_olahraga": id_mulai_olahraga,
+     
       
     
   };
