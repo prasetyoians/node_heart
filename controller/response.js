@@ -962,6 +962,8 @@ async function insertDataToHeart(req,res){
   var runtime = req.query.runtime;
   var modh = req.query.modh;
   var modo = req.query.modo;
+  var avgh = req.query.avgh;
+  var avgo = req.query.avgo;
 
 
 
@@ -984,6 +986,8 @@ const json = {
       "runtime": runtime,
       "modh": modh,
       "modo": modo,
+      "avgh": avgh,
+      "avgo": avgo,
      
       
     
@@ -994,11 +998,11 @@ const json = {
 
 
 
-const insertQuery = 'INSERT INTO heart (hr, spo2,suhu,id_user,id_mulai_olahraga,runtime,modh,modo) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *';
+const insertQuery = 'INSERT INTO heart (hr, spo2,suhu,id_user,id_mulai_olahraga,runtime,modh,modo,avgh,avgo) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,10) RETURNING *';
 
 
 
-await pool.query(insertQuery, [hr, spo2, suhu,id_user,id_mulai_olahraga,runtime,modh,modo], (err, res) => {
+await pool.query(insertQuery, [hr, spo2, suhu,id_user,id_mulai_olahraga,runtime,modh,modo,avgh,avgo], (err, res) => {
     console.log(insertQuery);
   
   if (err) {
