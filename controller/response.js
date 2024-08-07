@@ -994,7 +994,7 @@ const json = {
 
 
 
-const insertQuery = 'INSERT INTO heart (hr, spo2,suhu,id_user,id_mulai_olahraga,runtime,modh,modo) VALUES($1,$2,$3,$4,$5,$6) RETURNING *';
+const insertQuery = 'INSERT INTO heart (hr, spo2,suhu,id_user,id_mulai_olahraga,runtime,modh,modo) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *';
 
 
 
