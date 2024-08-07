@@ -1002,6 +1002,7 @@ const insertQuery = 'INSERT INTO heart (hr, spo2,suhu,id_user,id_mulai_olahraga,
 
 
 
+
 await pool.query(insertQuery, [hr, spo2, suhu,id_user,id_mulai_olahraga,runtime,modh,modo,avgh,avgo], (err, res) => {
     console.log(insertQuery);
   
