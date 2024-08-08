@@ -967,7 +967,7 @@ async function insertDataToHeart(req,res){
   var modh_cal = req.query.modh_cal;
 
 
-
+modh_cal = Math.round(modh_cal);
 var id_user = await cari_user_by_kode_alat(kode_alat);
 var id_mulai_olahraga = await cari_id_mulai_olahraga_terakhir_by_id_user(id_user);
 
