@@ -1005,7 +1005,7 @@ const insertQuery = 'INSERT INTO heart (hr, spo2,suhu,id_user,id_mulai_olahraga,
 
 
 
-await pool.query(insertQuery, [hr, spo2, suhu,id_user,id_mulai_olahraga,runtime,modh,modo,avgh,avgo,modh_cal], (err, res) => {
+await pool.query(insertQuery, [modh_cal, spo2, suhu,id_user,id_mulai_olahraga,runtime,modh,modo,avgh,avgo,modh_cal], (err, res) => {
     console.log(insertQuery);
   
   if (err) {
